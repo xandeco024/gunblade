@@ -1,0 +1,7 @@
+08/09
+
+- ORGANIZAÇÃO -> organização geral do projeto. exclusão de arquivos desnecessarios, arquivos renomeados e organizados por pastas.
+
+- SPLASH -> Adicionada splashscreen com logo da empresa e do jogo.
+
+- MENU -> Escala do canva do menu ajustada.
