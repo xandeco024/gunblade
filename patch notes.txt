@@ -5,3 +5,9 @@
 - SPLASH -> Adicionada splashscreen com logo da empresa e do jogo.
 
 - MENU -> Escala do canva do menu ajustada.
+
+14/09
+
+- ORGANIZAÇÃO -> mais organização de arquivos, deletei uns objetos desnecessarios, arquivos piriri pororo
+
+- MENU -> Menu inicial pronto
