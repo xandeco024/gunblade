@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour
     public bool facingRight = true;
 
     public PlayerController player;
+
     void Start()
     {
         currentHealth = MaxHealth;

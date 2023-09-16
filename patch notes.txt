@@ -11,3 +11,9 @@
 - ORGANIZAÇÃO -> mais organização de arquivos, deletei uns objetos desnecessarios, arquivos piriri pororo
 
 - MENU -> Menu inicial pronto
+
+15/09
+
+- ORGANIZAÇÃO -> Separação dos scripts do player, cada script deve ser responsavel por uma coisa, não um script só que faz tudo.
+
+- MOVIMENTO -> Player para imediatamente ao soltar a tecla de movimento.
