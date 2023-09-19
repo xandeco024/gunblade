@@ -16,25 +16,22 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement Status")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
+    [SerializeField] private float wallSlideSpeed;
+    [SerializeField] private float wallCheckDistance = 1.25f;
+    [SerializeField] private float groundCheckDistance = 1.25f;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] LayerMask wallLayer;
+
     private int facingDirection = 1;
-    private bool isGrounded;
+    private float wallJumpCD;
 
-    public float wallCheckDistance = 2;
-    private bool wallDetected;
+    private bool isWallSliding;
+    private bool isWallJumping;
+    private bool isJumping;
+    private bool isRunning;
 
-    private bool canWallJump;
-    private bool canWallSlide;
-    private bool IsWallSliding;
-
-    public float WallSlideSpeed;
-
-    public float movHorizontal;
-    public float movVertical;
-
-    public bool isOnRight = true;
-
+    private float horizontalInput;
+    private bool jumpTrigger;
 
     private void Start()
     {
@@ -46,84 +43,114 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        GroundCheck();
-        Jump();
-
-        if (isGrounded && wallDetected)
+        if(playerController.canPlayerMove() && !playerController.isPlayerDead())
         {
-            if (isOnRight && movHorizontal < 0)
-            {
-                Flip();
-            }
-            else if (!isOnRight && movHorizontal > 0)
-            {
-                Flip();
-            }
+            inputCheck();
+            WallSlide();
         }
-
-        if (wallDetected && canWallSlide)
-        {
-            IsWallSliding = true;
-            playerRB.velocity = new Vector2(playerRB.velocity.x, playerRB.velocity.y * 0.1f);
-        }
-        else
-        {
-            IsWallSliding = false;
-        }
-
-        WallCheck();
     }
 
     private void FixedUpdate()
     {
-        Move();
+        Jump(jumpTrigger);
+        Move(horizontalInput);
     }
 
-    void Move()
+    void inputCheck()
     {
-        float horizontalInput;
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            jumpTrigger = true;
+        }
 
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || !GroundCheck())
         {
             horizontalInput = Input.GetAxis("Horizontal");
         }
 
         else horizontalInput = 0;
 
-        Vector2 playerVelocity = playerRB.velocity;
-
-        playerVelocity.x = (horizontalInput * moveSpeed);
-
-        playerRB.velocity = playerVelocity;
-
-        if (horizontalInput > 0 && facingDirection == -1) Flip();
-        else if (horizontalInput < 0 && facingDirection == 1) Flip();
     }
 
-    void Jump()
+    void Move(float horizontalInput)
     {
-        if(Input.GetKeyDown(KeyCode.Space))
+        if(!isWallSliding && !isWallJumping) 
         {
-            if(isGrounded && !IsWallSliding)
+            Vector2 playerVelocity = playerRB.velocity;
+            playerVelocity.x = (horizontalInput * moveSpeed);
+            playerRB.velocity = playerVelocity;
+            if (horizontalInput > 0 && facingDirection == -1) Flip();
+            else if (horizontalInput < 0 && facingDirection == 1) Flip();
+
+            isRunning = true;
+        }
+
+        else isRunning = false;
+    }
+
+    void Jump(bool trigger)
+    {
+        if(trigger)
+        {
+            if (GroundCheck() && !isWallSliding)
             {
                 playerRB.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
+
+                isJumping = true;
             }
 
-            else if (IsWallSliding)
+            else if (!GroundCheck() && isWallSliding)
             {
-                playerRB.AddForce(new Vector2(1 * -facingDirection, 100), ForceMode2D.Impulse);
+                Flip();
+                playerRB.velocity = new Vector2(0, 0);
+                playerRB.AddForce(new Vector2(10 * facingDirection, 10), ForceMode2D.Impulse);
+
+                isWallJumping = true;
             }
         }
 
+        if(isJumping && GroundCheck()) isJumping = false;
+
+        if (isWallJumping)
+        {
+            wallJumpCD += Time.deltaTime;
+
+            if (WallCheck() || wallJumpCD >= 1f || GroundCheck())
+            {
+                isWallJumping = false;
+                wallJumpCD = 0;
+            }
+        }
+
+        jumpTrigger = false;
     }
 
-    private void WallCheck()
+    private void WallSlide()
     {
-        wallDetected = Physics2D.Raycast(transform.position, transform.right * facingDirection, 1.25f, wallLayer);
-        Debug.DrawRay(transform.position, Vector3.right * 1.25f * facingDirection, Color.blue);
+        if (WallCheck() && !GroundCheck())
+        {
+            isWallSliding = true;
+            playerRB.velocity = new Vector2(playerRB.velocity.x, -wallSlideSpeed);
+        }
+        else
+        {
+            isWallSliding = false;
+        }
 
-        if (!isGrounded) canWallSlide = true;
-        else canWallSlide = false;
+        CancelSlide();
+    }
+
+    private void CancelSlide()
+    {
+        if(isWallSliding && Input.GetKeyDown(KeyCode.A) && facingDirection == 1)
+        {
+            Flip();
+        }
+
+        else if (isWallSliding && Input.GetKeyDown(KeyCode.D) && facingDirection == -1)
+        {
+            Flip();
+        }
     }
 
     void Flip()
@@ -134,16 +161,35 @@ public class PlayerMovement : MonoBehaviour
         transform.localScale = playerScale;
     }
 
-    void GroundCheck()
+    private bool WallCheck()
     {
-        RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 1.5f, groundLayer);
-        Debug.DrawRay(transform.position, Vector3.down * 1.5f, Color.green);
-        if (hit.collider != null) isGrounded = true;
-        else isGrounded = false;
+        Debug.DrawRay(transform.position, Vector3.right * wallCheckDistance * facingDirection, Color.blue);
+        return Physics2D.Raycast(transform.position, transform.right * facingDirection, wallCheckDistance, wallLayer);
     }
 
-    private void OnDrawGizmos()
+    private bool GroundCheck()
     {
+        Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, Color.green);
+        return Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
+    }
 
+    public bool IsWallJumping()
+    {
+        return isWallJumping;
+    }
+
+    public bool IsJumping()
+    {
+        return isJumping;
+    }
+
+    public bool IsWallSliding()
+    {
+        return isWallSliding;
+    }
+
+    public bool IsRunning()
+    {
+        return isRunning;
     }
 }

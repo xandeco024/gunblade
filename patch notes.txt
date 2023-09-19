@@ -17,3 +17,7 @@
 - ORGANIZAÇÃO -> Separação dos scripts do player, cada script deve ser responsavel por uma coisa, não um script só que faz tudo.
 
 - MOVIMENTO -> Player para imediatamente ao soltar a tecla de movimento.
+
+19/09
+
+- MOVIMENTO -> Script de movimento completado. Movimento horizontal, Walljump, e pulo normal.

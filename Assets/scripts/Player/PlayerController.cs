@@ -16,14 +16,8 @@ public class PlayerController : MonoBehaviour
 
     public int maxHealth = 100;
     public int currentHealth;
-    public bool isDead = false;
 
     public GameManagerScript gameManager;
-
-    private bool canMove = true;
-    public float velocity = 10f;
-    public float jumpForce = 10f;
-    private int facingDiraction = 1;
 
     public LayerMask groundLayer;
     public bool isOnGround;
@@ -31,6 +25,9 @@ public class PlayerController : MonoBehaviour
     public float checkRadius;
     public static int NumberOfCoins;
     public TextMeshProUGUI coinsText;
+
+    private bool canMove = true;
+    private bool isDead = false;
 
     private void Awake()
     {
@@ -121,5 +118,20 @@ public class PlayerController : MonoBehaviour
             //rigid.velocity = new Vector2(25, 1);
             rigid.AddForce(transform.up * 10, ForceMode2D.Impulse);
         }
+    }
+
+    public bool isPlayerDead()
+    {
+        return isDead;
+    }
+
+    public bool canPlayerMove()
+    {
+        return canMove;
+    }
+
+    public void setPlayerCanMove(bool move)
+    {
+        canMove = move;
     }
 }
