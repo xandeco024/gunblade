@@ -21,3 +21,9 @@
 19/09
 
 - MOVIMENTO -> Script de movimento completado. Movimento horizontal, Walljump, e pulo normal.
+
+20/09 
+
+- COMBATE -> Script de combate separado do script do player.
+Ataque básico completado.
+Inicio mecanica de tiro com dash.

@@ -86,40 +86,6 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        //rigid.AddForce(transform.forward * 8, ForceMode2D.Impulse);
-
-        if (other.CompareTag("Bullet"))
-        {
-            rigid.AddForce(transform.up * 8, ForceMode2D.Impulse);
-            //KnockBack(other);
-        }
-    }
-
-    void KnockBack(Collider2D coll)
-    {
-        GameObject bullet = coll.gameObject;
-
-        if (bullet.transform.position.x > transform.position.x)
-        {
-            print("Mode1");
-            //rigid.velocity = new Vector2(-25, 1);
-            rigid.AddForce(transform.up * 10, ForceMode2D.Impulse);
-        }
-        else if (bullet.transform.position.x <= transform.position.x)
-        {
-            print("Mode2");
-            //rigid.velocity = new Vector2(25, 1);
-            rigid.AddForce(transform.up * 10, ForceMode2D.Impulse);
-        }
-    }
-
     public bool isPlayerDead()
     {
         return isDead;

@@ -21,15 +21,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float groundCheckDistance = 1.25f;
     [SerializeField] LayerMask groundLayer;
     [SerializeField] LayerMask wallLayer;
-
     private int facingDirection = 1;
     private float wallJumpCD;
-
     private bool isWallSliding;
     private bool isWallJumping;
     private bool isJumping;
     private bool isRunning;
-
     private float horizontalInput;
     private bool jumpTrigger;
 
