@@ -29,6 +29,11 @@ public class PlayerCombat : MonoBehaviour
     private float attackDurationCounter;
     private bool canAttack;
 
+    private bool shootTrigger;
+    private bool isShooting;
+    [SerializeField] float shootDuration;
+    private float shootDurationCounter;
+
     private void Start()
     {
         playerController = GetComponent<PlayerController>();
@@ -55,11 +60,21 @@ public class PlayerCombat : MonoBehaviour
         attack(attackTrigger);
     }
 
+    private void FixedUpdate()
+    {
+        shoot(shootTrigger);
+    }
+
     void inputCheck()
     {
         if (Input.GetKeyDown(KeyCode.F))
         {
             attackTrigger = true;
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            shootTrigger = true;
         }
     }
 
@@ -96,6 +111,17 @@ public class PlayerCombat : MonoBehaviour
                 Debug.Log("animação de ataque " + attackAnimIndex);
             }
             attackTrigger = false;
+        }
+    }
+
+    void shoot(bool trigger)
+    {
+        if(trigger)
+        {
+            Debug.Log("atirou");
+            playerController.setPlayerCanMove(false);
+            playerRB.AddForce(new Vector2(-facingDirection * 10, 10), ForceMode2D.Impulse);
+            shootTrigger = false;
         }
     }
 

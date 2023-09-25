@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Jump(jumpTrigger);
-        Move(horizontalInput);
+        //Move(horizontalInput);
     }
 
     void inputCheck()
