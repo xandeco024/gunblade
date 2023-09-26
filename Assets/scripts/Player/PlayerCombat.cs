@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.AI;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class PlayerCombat : MonoBehaviour
     private int facingDirection;
 
     [Header("Gun")]
-    [SerializeField] private Vector2 firePoint;
+    [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float recoilForce;
     private bool fireTrigger = false;
     private bool isShooting = false;
@@ -27,6 +28,7 @@ public class PlayerCombat : MonoBehaviour
     private float shotCDCounter;
     private float shotDurationCounter;
     private bool canShoot;
+    private Transform firePoint;
 
     [Header("Blade")]
     [SerializeField] private Vector2 attackPoint;
@@ -64,6 +66,26 @@ public class PlayerCombat : MonoBehaviour
         else if (transform.localScale.x < 0) facingDirection= -1;
 
         attack(attackTrigger);
+
+        if(Input.GetKeyDown(KeyCode.W))
+        {
+            firePoint = new Vector2(0, 1);
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            firePoint = new Vector2(-1, 0);
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            firePoint = new Vector2(0, -1);
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            firePoint = new Vector2(1, 0);
+        }
+
+        Vector2 circlePosition = new Vector2(transform.position.x, transform.position.y) + firePoint * 3;
+        DrawCircle(circlePosition, attackRange, Color.red);
     }
 
     private void FixedUpdate()
@@ -122,17 +144,9 @@ public class PlayerCombat : MonoBehaviour
 
     void shoot(bool trigger)
     {
-        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); // Pega a posição do mouse na tela
-        mousePosition.z = 0; // Define a coordenada z da posição do mouse para 0, já que estamos trabalhando em 2D
-
-        Vector3 direction = (mousePosition - transform.position).normalized; // Calcula a direção do cursor do mouse em relação à posição do personagem
-
-        Vector3 circlePosition = transform.position + direction * 3;
-
-        Vector2 translatedFirePoint = new Vector2(transform.position.x, transform.position.y) + new Vector2(firePoint.x * facingDirection, firePoint.y);
-        DrawCircle(circlePosition, attackRange, Color.red);
 
         DrawCircle(transform.position, 3, Color.cyan);
+
 
         if (isShooting)
         {
@@ -164,7 +178,9 @@ public class PlayerCombat : MonoBehaviour
                 isShooting = true;
                 Debug.Log("atirou");
                 //playerController.setPlayerCanMove(false);
-                playerRB.AddForce(-direction * recoilForce, ForceMode2D.Impulse);
+                playerRB.AddForce(-firePoint * recoilForce, ForceMode2D.Impulse);
+
+                GameObject bulletInstance = Instantiate(bulletPrefab, (transform.position + new Vector3(firePoint.x, firePoint.y, 0)), firePoint.rotation);
             }
 
             fireTrigger = false;

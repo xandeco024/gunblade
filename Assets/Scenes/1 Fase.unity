@@ -2009,7 +2009,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 823772464}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -41.1166, y: 1.1847, z: 0}
+  m_LocalPosition: {x: -33.46, y: -2.61, z: 0}
   m_LocalScale: {x: 1.3368434, y: 0.5337, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2033,7 +2033,7 @@ Rigidbody2D:
   m_AngularDrag: 0.05
   m_GravityScale: 0
   m_Material: {fileID: 0}
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -4586,7 +4586,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 64
-  firePoint: {x: -1, y: -1}
+  bulletPrefab: {fileID: 823772464}
   recoilForce: 15
   shotCD: 0
   shotDuration: 0
@@ -4632,7 +4632,7 @@ MonoBehaviour:
   moveSpeed: 10
   jumpForce: 10
   wallSlideSpeed: 0.5
-  wallCheckDistance: 1.25
+  wallCheckDistance: 0.75
   groundCheckDistance: 1.25
   groundLayer:
     serializedVersion: 2
