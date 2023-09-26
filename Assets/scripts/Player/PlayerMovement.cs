@@ -1,8 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -50,7 +45,7 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Jump(jumpTrigger);
-        //Move(horizontalInput);
+        Move(horizontalInput);
     }
 
     void inputCheck()
@@ -65,7 +60,10 @@ public class PlayerMovement : MonoBehaviour
             horizontalInput = Input.GetAxis("Horizontal");
         }
 
-        else horizontalInput = 0;
+        else if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+        {
+            horizontalInput = 0;
+        }
 
     }
 

@@ -10,29 +10,35 @@ public class PlayerCombat : MonoBehaviour
     private CapsuleCollider2D playerCol;
     private SpriteRenderer playerSR;
 
-    [Header("Combat Stats")]
+    [Header("Hero Stats")]
     [SerializeField] private float maxHealth;
     private float currentHealth;
-
-    [SerializeField] private Vector3 attackPoint;
-    [SerializeField] private float attackDamage;
-    [SerializeField] private float attackRange;
     [SerializeField] private LayerMask enemyLayer;
-
-    private int attackAnimIndex;
-    private bool isAttacking;
     private bool isDead = false;
     private int facingDirection;
 
-    private bool attackTrigger;
+    [Header("Gun")]
+    [SerializeField] private Vector2 firePoint;
+    [SerializeField] private float recoilForce;
+    private bool fireTrigger = false;
+    private bool isShooting = false;
+    [SerializeField] float shotCD;
+    [SerializeField] float shotDuration;
+    private float shotCDCounter;
+    private float shotDurationCounter;
+    private bool canShoot;
+
+    [Header("Blade")]
+    [SerializeField] private Vector2 attackPoint;
+    [SerializeField] private float attackDamage;
+    [SerializeField] private float attackRange;
     [SerializeField] float attackDuration;
     private float attackDurationCounter;
+    private bool attackTrigger = false;
+    private bool isAttacking = false;
+    private int attackAnimIndex;
     private bool canAttack;
 
-    private bool shootTrigger;
-    private bool isShooting;
-    [SerializeField] float shootDuration;
-    private float shootDurationCounter;
 
     private void Start()
     {
@@ -62,7 +68,7 @@ public class PlayerCombat : MonoBehaviour
 
     private void FixedUpdate()
     {
-        shoot(shootTrigger);
+        shoot(fireTrigger);
     }
 
     void inputCheck()
@@ -74,13 +80,13 @@ public class PlayerCombat : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            shootTrigger = true;
+            fireTrigger = true;
         }
     }
 
     void attack(bool trigger)
     {
-        Vector3 translatedAttackPoint = transform.position + attackPoint * facingDirection;
+        Vector2 translatedAttackPoint = new Vector2(transform.position.x, transform.position.y) + attackPoint * facingDirection;
         DrawCircle(translatedAttackPoint, attackRange, Color.red);
 
         if(isAttacking)
@@ -116,12 +122,52 @@ public class PlayerCombat : MonoBehaviour
 
     void shoot(bool trigger)
     {
-        if(trigger)
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition); // Pega a posição do mouse na tela
+        mousePosition.z = 0; // Define a coordenada z da posição do mouse para 0, já que estamos trabalhando em 2D
+
+        Vector3 direction = (mousePosition - transform.position).normalized; // Calcula a direção do cursor do mouse em relação à posição do personagem
+
+        Vector3 circlePosition = transform.position + direction * 3;
+
+        Vector2 translatedFirePoint = new Vector2(transform.position.x, transform.position.y) + new Vector2(firePoint.x * facingDirection, firePoint.y);
+        DrawCircle(circlePosition, attackRange, Color.red);
+
+        DrawCircle(transform.position, 3, Color.cyan);
+
+        if (isShooting)
         {
-            Debug.Log("atirou");
-            playerController.setPlayerCanMove(false);
-            playerRB.AddForce(new Vector2(-facingDirection * 10, 10), ForceMode2D.Impulse);
-            shootTrigger = false;
+            shotDurationCounter += Time.deltaTime;
+
+            if (shotDurationCounter >= shotDuration)
+            {
+                isShooting = false;
+                shotDurationCounter = 0;
+            }
+        }
+
+        if (!canShoot)
+        {
+            shotCDCounter += Time.deltaTime;
+
+            if (shotCDCounter >= shotCD)
+            {
+                canShoot = true;
+                shotCDCounter = 0;
+            }
+        }
+
+
+        if (trigger)
+        {
+            if(!isShooting && canShoot)
+            {
+                isShooting = true;
+                Debug.Log("atirou");
+                //playerController.setPlayerCanMove(false);
+                playerRB.AddForce(-direction * recoilForce, ForceMode2D.Impulse);
+            }
+
+            fireTrigger = false;
         }
     }
 
