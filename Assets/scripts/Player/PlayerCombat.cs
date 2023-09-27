@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.AI;
 
@@ -24,11 +25,13 @@ public class PlayerCombat : MonoBehaviour
     private bool fireTrigger = false;
     private bool isShooting = false;
     [SerializeField] float shotCD;
-    [SerializeField] float shotDuration;
+    [SerializeField] float dashDuration;
     private float shotCDCounter;
-    private float shotDurationCounter;
+    private float dashDurationCounter;
     private bool canShoot;
-    private Transform firePoint;
+    private Vector2 firePoint;
+    private Vector2 fireDirection;
+    private int rotation = 0;
 
     [Header("Blade")]
     [SerializeField] private Vector2 attackPoint;
@@ -50,6 +53,8 @@ public class PlayerCombat : MonoBehaviour
         playerSR = GetComponent<SpriteRenderer>();
 
         currentHealth = maxHealth;
+
+        firePoint = new Vector2(1, 0);
     }
 
     void Update()
@@ -69,23 +74,49 @@ public class PlayerCombat : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.W))
         {
-            firePoint = new Vector2(0, 1);
+            rotation = 90;
+            fireDirection = new Vector2(0, 1);
         }
         else if (Input.GetKeyDown(KeyCode.A))
         {
-            firePoint = new Vector2(-1, 0);
+            rotation = 180;
+            fireDirection = new Vector2(-1, 0);
         }
         else if (Input.GetKeyDown(KeyCode.S))
         {
-            firePoint = new Vector2(0, -1);
+            rotation = 270;
+            fireDirection = new Vector2(0, -1);
         }
         else if (Input.GetKeyDown(KeyCode.D))
         {
-            firePoint = new Vector2(1, 0);
+            rotation = 0;
+            fireDirection = new Vector2(1, 0);
         }
 
-        Vector2 circlePosition = new Vector2(transform.position.x, transform.position.y) + firePoint * 3;
-        DrawCircle(circlePosition, attackRange, Color.red);
+        else if (Input.GetKeyDown(KeyCode.E))
+        {
+            rotation = 45;
+            fireDirection = new Vector2(0.707f, 0.707f);
+        }
+        else if (Input.GetKeyDown(KeyCode.Q))
+        {
+            rotation = 135;
+            fireDirection = new Vector2(-0.707f, 0.707f);
+        }
+        else if (Input.GetKeyDown(KeyCode.Z))
+        {
+            rotation = 225;
+            fireDirection = new Vector2(-0.707f, -0.707f);
+        }
+        else if (Input.GetKeyDown(KeyCode.X))
+        {
+            rotation = 315;
+            fireDirection = new Vector2(0.707f, -0.707f);
+        }
+
+
+        firePoint = new Vector2(transform.position.x, transform.position.y) + fireDirection * 3;
+        DrawCircle(firePoint, attackRange, Color.red);
     }
 
     private void FixedUpdate()
@@ -150,12 +181,12 @@ public class PlayerCombat : MonoBehaviour
 
         if (isShooting)
         {
-            shotDurationCounter += Time.deltaTime;
+            dashDurationCounter += Time.deltaTime;
 
-            if (shotDurationCounter >= shotDuration)
+            if (dashDurationCounter >= dashDuration)
             {
                 isShooting = false;
-                shotDurationCounter = 0;
+                dashDurationCounter = 0;
             }
         }
 
@@ -170,7 +201,6 @@ public class PlayerCombat : MonoBehaviour
             }
         }
 
-
         if (trigger)
         {
             if(!isShooting && canShoot)
@@ -178,9 +208,11 @@ public class PlayerCombat : MonoBehaviour
                 isShooting = true;
                 Debug.Log("atirou");
                 //playerController.setPlayerCanMove(false);
-                playerRB.AddForce(-firePoint * recoilForce, ForceMode2D.Impulse);
 
-                GameObject bulletInstance = Instantiate(bulletPrefab, (transform.position + new Vector3(firePoint.x, firePoint.y, 0)), firePoint.rotation);
+                playerRB.AddForce(-fireDirection * recoilForce, ForceMode2D.Impulse);
+
+                GameObject bulletInstance = Instantiate(bulletPrefab, firePoint, Quaternion.Euler(0, 0, rotation));
+                bulletInstance.GetComponent<Rigidbody2D>().velocity = fireDirection * 20;
             }
 
             fireTrigger = false;
