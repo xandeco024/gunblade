@@ -14,20 +14,23 @@ public class PlayerCombat : MonoBehaviour
 
     [Header("Hero Stats")]
     [SerializeField] private float maxHealth;
-    private float currentHealth;
     [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] private float knockBackForce;
+    [SerializeField] private float knockBackDuration;
+    private float currentHealth;
     private bool isDead = false;
     private int facingDirection;
+    
 
     [Header("Gun")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float recoilForce;
-    private bool fireTrigger = false;
-    private bool isShooting = false;
     [SerializeField] float shotCD;
     [SerializeField] float dashDuration;
+    [SerializeField] private float reloadTime;
+    private bool fireTrigger = false;
+    private bool isShooting = false;
     private float shotCDCounter;
-    private float dashDurationCounter;
     private bool canShoot;
     private Vector2 firePoint;
     private Vector2 fireDirection;
@@ -61,10 +64,14 @@ public class PlayerCombat : MonoBehaviour
     {
         inputCheck();
 
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            TakeDamage(1, true);
+        }
 
         if (currentHealth <= 0)
         {
-            isDead = true;
+            // = true;
         }
 
         if(transform.localScale.x > 0) facingDirection = 1;
@@ -114,8 +121,7 @@ public class PlayerCombat : MonoBehaviour
             fireDirection = new Vector2(0.707f, -0.707f);
         }
 
-
-        firePoint = new Vector2(transform.position.x, transform.position.y) + fireDirection * 3;
+        firePoint = new Vector2(transform.position.x, transform.position.y) + fireDirection * 2;
         DrawCircle(firePoint, attackRange, Color.red);
     }
 
@@ -160,14 +166,14 @@ public class PlayerCombat : MonoBehaviour
             if(!isAttacking)
             {
                 isAttacking = true;
-                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(attackPoint, attackRange, enemyLayer);
+                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(translatedAttackPoint, attackRange, enemyLayer);
                 foreach (Collider2D enemy in hitEnemies)
                 {
-                    //enemy.GetComponent<Enemy>().TakeDamage(attackDamage);
+                    enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage, true);
                 }
                 Debug.Log("Atacou " + hitEnemies.Length + " inimigos");
                 attackAnimIndex++;
-                Debug.Log("animação de ataque " + attackAnimIndex);
+                //Debug.Log("animação de ataque " + attackAnimIndex);
             }
             attackTrigger = false;
         }
@@ -176,19 +182,7 @@ public class PlayerCombat : MonoBehaviour
     void shoot(bool trigger)
     {
 
-        DrawCircle(transform.position, 3, Color.cyan);
-
-
-        if (isShooting)
-        {
-            dashDurationCounter += Time.deltaTime;
-
-            if (dashDurationCounter >= dashDuration)
-            {
-                isShooting = false;
-                dashDurationCounter = 0;
-            }
-        }
+        DrawCircle(transform.position, 2, Color.cyan);
 
         if (!canShoot)
         {
@@ -205,41 +199,70 @@ public class PlayerCombat : MonoBehaviour
         {
             if(!isShooting && canShoot)
             {
-                isShooting = true;
-                Debug.Log("atirou");
-                //playerController.setPlayerCanMove(false);
 
-                playerRB.AddForce(-fireDirection * recoilForce, ForceMode2D.Impulse);
+                //Debug.Log("atirou");
+                StartCoroutine(DashCorroutine(dashDuration));
 
-                GameObject bulletInstance = Instantiate(bulletPrefab, firePoint, Quaternion.Euler(0, 0, rotation));
-                bulletInstance.GetComponent<Rigidbody2D>().velocity = fireDirection * 20;
             }
 
             fireTrigger = false;
         }
     }
 
-    public void TakeDamage(float damage)
+    IEnumerator DashCorroutine(float dashDuration)
     {
-        currentHealth -= damage;
+        //Debug.Log("Marco");
+
+        isShooting = true;
+        playerController.setPlayerCanMove(false);
+
+        GameObject bulletInstance = Instantiate(bulletPrefab, firePoint, Quaternion.Euler(0, 0, rotation));
+        //bulletInstance.GetComponent<Rigidbody2D>().velocity = fireDirection * 20;
+
+        playerRB.velocity = playerRB.velocity + -fireDirection * recoilForce;
+
+        yield return new WaitForSeconds(dashDuration);
+
+        //playerRB.velocity.Normalize();
+
+        playerController.setPlayerCanMove(true);
+        isShooting = false;
+
+        //Debug.Log("Polo");
     }
 
-    void KnockBack(Collider2D coll)
+    public void TakeDamage(float damage, bool knockBack)
     {
-        GameObject bullet = coll.gameObject;
+        currentHealth -= damage;
+        StartCoroutine(Flash());
 
-        if (bullet.transform.position.x > transform.position.x)
-        {
-            print("Mode1");
-            //rigid.velocity = new Vector2(-25, 1);
-            playerRB.AddForce(transform.up * 10, ForceMode2D.Impulse);
-        }
-        else if (bullet.transform.position.x <= transform.position.x)
-        {
-            print("Mode2");
-            //rigid.velocity = new Vector2(25, 1);
-            playerRB.AddForce(transform.up * 10, ForceMode2D.Impulse);
-        }
+        if (knockBack) StartCoroutine(KnockBack());
+    }
+
+    IEnumerator Flash()
+    {
+        Color originalColor = playerSR.color;
+        Color flashColor = new Color(255, 0, 0);
+
+        playerSR.color = flashColor;
+        yield return new WaitForSeconds(.1f);
+        playerSR.color = originalColor;
+        yield return new WaitForSeconds(.1f);
+        playerSR.color = flashColor;
+        yield return new WaitForSeconds(.1f);
+        playerSR.color = originalColor;
+        yield return new WaitForSeconds(.1f);
+        playerSR.color = flashColor;
+        yield return new WaitForSeconds(.1f);
+        playerSR.color = originalColor;
+    }
+
+    IEnumerator KnockBack()
+    {
+        playerController.setPlayerCanMove(false);
+        playerRB.AddForce(new Vector2(-facingDirection, 1) * knockBackForce, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(knockBackDuration);
+        playerController.setPlayerCanMove(true);
     }
 
     void DrawCircle(Vector3 position, float radius, Color color)
@@ -257,5 +280,20 @@ public class PlayerCombat : MonoBehaviour
             Vector3 point2 = new Vector3(x, y, 0) + position;
             Debug.DrawLine(point1, point2, color);
         }
+    }
+
+    public float GetHealth()
+    {
+        return currentHealth;
+    }
+
+    public void SetHealth(float health)
+    {
+        currentHealth = health;
+    }
+
+    public void Heal(float health)
+    {
+        currentHealth += health;
     }
 }

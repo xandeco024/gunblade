@@ -69,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
 
     void Move(float horizontalInput)
     {
-        if(!isWallSliding && !isWallJumping) 
+        if(!isWallSliding && !isWallJumping && playerController.canPlayerMove()) 
         {
             Vector2 playerVelocity = playerRB.velocity;
             playerVelocity.x = (horizontalInput * moveSpeed);

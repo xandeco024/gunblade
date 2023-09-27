@@ -9,10 +9,12 @@ public class Bullet : MonoBehaviour
     private CapsuleCollider2D bulletCol;
 
     [Header("Stats")]
+    [SerializeField] private float explosionDamage;
+    [SerializeField] private float explosionRange;
     [SerializeField] private float bulletSpeed;
-    [SerializeField] private LayerMask groundLayer;
-    [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float bulletLifetime;
+    [SerializeField] private LayerMask enemyLayer;
+    [SerializeField] GameObject explosionParticle;
 
     private void Awake()
     {
@@ -23,6 +25,7 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         Destroy(gameObject, 5f);
+        bulletRB.velocity = transform.right * bulletSpeed;
     }
 
     void Update()
@@ -34,21 +37,19 @@ public class Bullet : MonoBehaviour
     {
         if (collision != null)
         {
-            Debug.Log("penis");
-
-            if (collision.gameObject.layer == LayerMask.NameToLayer("Ground"))
+            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, explosionRange, enemyLayer);
+            foreach (Collider2D enemy in hitEnemies)
             {
-                Debug.Log("bateu no inimigo");
-                DestroyBullet();
+                enemy.GetComponent<EnemyHealth>().TakeDamage(explosionDamage, true);
             }
+            Debug.Log("Pegou " + hitEnemies.Length + " inimigos");
 
-            else if(collision.gameObject.layer == groundLayer)
-            {
-                Debug.Log("bateu no terreno");
-                DestroyBullet();
-            }
+            Instantiate(explosionParticle, transform.position, Quaternion.identity);
+
+            Debug.Log("bateu");
+            DestroyBullet();
         }
-    }
+    }   
 
     void DestroyBullet()
     {

@@ -9,44 +9,36 @@ public class PlayerController : MonoBehaviour
 {
 
     //componentes
-    private Rigidbody2D rigid;
-    private Animator anim;
+    [Header("Components")]
+    private GameManagerScript gameManager;
+    private PlayerCombat playerCombat;
+    private PlayerMovement playerMovement;
 
     [SerializeField] GameObject[] Cards ;
 
-    public int maxHealth = 100;
-    public int currentHealth;
-
-    public GameManagerScript gameManager;
-
-    public LayerMask groundLayer;
-    public bool isOnGround;
-    public Transform feet;
-    public float checkRadius;
     public static int NumberOfCoins;
     public TextMeshProUGUI coinsText;
 
     private bool canMove = true;
     private bool isDead = false;
 
+    private float currentHealth;
+
     private void Awake()
     {
         NumberOfCoins = PlayerPrefs.GetInt("NumberOfCoins", 0);
+
+        playerCombat = GetComponent<PlayerCombat>();
+        playerMovement = GetComponent<PlayerMovement>();
     }
 
     void Start()
     {
-        rigid = GetComponent<Rigidbody2D>();
-        anim = GetComponent<Animator>();
-        gameManager = FindObjectOfType<GameManagerScript>();
-        currentHealth = maxHealth;
-        transform.position = new Vector2(gameManager.RespawnPoint.x,gameManager.RespawnPoint.y);
     }
 
     void Update()
     {
-
-        isOnGround = Physics2D.OverlapCircle(feet.position, checkRadius, groundLayer);
+        currentHealth = playerCombat.GetHealth();
 
         if (!isDead) 
         {
@@ -75,9 +67,7 @@ public class PlayerController : MonoBehaviour
             if (isDead)
             {
                 gameManager.gameOver();
-                //Destroy(this.gameObject);
             }
-            
                 coinsText.text = NumberOfCoins.ToString();
         }
     }
