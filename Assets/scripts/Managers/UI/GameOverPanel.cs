@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class GameOverPanel : MonoBehaviour
@@ -19,34 +20,51 @@ public class GameOverPanel : MonoBehaviour
     [SerializeField] private TextMeshProUGUI costValueText;
     [SerializeField] Color costValueColor1, costValueColor2;
     [SerializeField] private float costInterpolateTime;
+
+    private GameManagerScript gameManagerScript;
+    private GameUIManager gameUIManager;
+    private PlayerController playerController;
      
     float startTime = 0;
 
     private void Start()
     {
+        gameManagerScript = GameObject.FindObjectOfType<GameManagerScript>();
+        playerController = GameObject.FindObjectOfType<PlayerController>();
+        gameUIManager = GameObject.FindObjectOfType<GameUIManager>();
+
         startTime = Time.time;  
     }
 
     private void Update()
     {
+        if(gameManagerScript.RetryCost <= gameManagerScript.Balance && gameManagerScript.Balance != 0)
+        {
+            RetryCanvas();
+        }
+
+        else
+        {
+            OverCanvas();
+        }
     }
-    public void OverCanvas(float cost, float balance)
+    public void OverCanvas()
     {
         if (!overText.gameObject.activeSelf) overText.gameObject.SetActive(true);
         if (retryBtn.interactable) retryBtn.interactable = false;
-        costValueText.SetText("$ " + cost.ToString());
+        costValueText.SetText("$ " + gameManagerScript.RetryCost.ToString());
         costValueText.color = InterpolateColor(costValueColor1, costValueColor2, costInterpolateTime);
-        balanceValueText.SetText("$ " + balance.ToString());
+        balanceValueText.SetText("$ " + gameManagerScript.Balance.ToString());
         balanceValueText.color = InterpolateColor(costValueColor1, costValueColor2, balanceInterpolateTime);
     }
 
-    public void RetryCanvas(float cost, float balance)
+    public void RetryCanvas()
     {
         if(overText.gameObject.activeSelf) overText.gameObject.SetActive(false);
         if (!retryBtn.interactable) retryBtn.interactable = true;
-        costValueText.SetText("$ " + cost.ToString());
+        costValueText.SetText("$ " + gameManagerScript.RetryCost.ToString());
         costValueText.color = InterpolateColor(costValueColor1, costValueColor2, costInterpolateTime);
-        balanceValueText.SetText("$ " + balance.ToString());
+        balanceValueText.SetText("$ " + gameManagerScript.Balance.ToString());
         balanceValueText.color = InterpolateColor(balanceValueColor1, balanceValueColor2, balanceInterpolateTime);
     }
 
@@ -64,5 +82,24 @@ public class GameOverPanel : MonoBehaviour
         Color color = new Color(rValue, gValue, bValue, 1);
 
         return color;
+    }
+
+    public void Retry()
+    {
+        gameManagerScript.Balance -= gameManagerScript.RetryCost;
+        gameManagerScript.RetryCost += 100;
+
+        if (Time.timeScale <= 0) Time.timeScale = 1;    
+
+        Scene currentScene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(currentScene.name);
+    }
+
+    public void Menu()
+    {
+
+        if (Time.timeScale <= 0) Time.timeScale = 1;
+
+        SceneManager.LoadScene("Menu");
     }
 }

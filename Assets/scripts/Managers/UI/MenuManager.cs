@@ -17,8 +17,9 @@ public class MenuManager : MonoBehaviour
 
     public void QuitGame()
     {
-        if (UnityEditor.EditorApplication.isPlaying) UnityEditor.EditorApplication.isPlaying = false;
-        else Application.Quit();
+        //if (UnityEditor.EditorApplication.isPlaying) UnityEditor.EditorApplication.isPlaying = false;
+        //else
+        Application.Quit();
     }
 
     // metodo para isso

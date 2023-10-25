@@ -6,13 +6,13 @@ public class PlayerAnimation : MonoBehaviour
 
     [Header("Components")]
     private Animator playerAnimator;
-    private PlayerMovement playerMovement;
-    private PlayerCombat playerCombat;
     private PlayerController playerController;
 
     [Header("State")]
     private bool isRunning;
     private bool isJumping;
+    private bool fallTrigger;
+    private bool jumpTrigger;
     private bool isWallSliding;
     private bool isWallJumping;
     private bool isAttacking;
@@ -21,58 +21,49 @@ public class PlayerAnimation : MonoBehaviour
     private bool isDying;
 
     // [Header("State Actions")]
-    private Action startRunning;
-    private Action stopRunning;
-    private Action jump;
-    private Action land;
-
-    void Awake()
-    {
-        startRunning = () => HandleAnimation("Run", true);
-        stopRunning = () => HandleAnimation("Run", false);
-        jump = () => HandleAnimation("Jump", true);
-        land = () => HandleAnimation("Land", true);
-
-        PlayerMovement.OnStartRunning += startRunning;
-        PlayerMovement.OnStopRunning += stopRunning;
-        PlayerMovement.OnJump += jump;
-        PlayerMovement.OnLand += land;
-    }
 
     void Start()
     {
         playerAnimator = GetComponent<Animator>();
-        playerMovement = GetComponent<PlayerMovement>();
-        playerCombat = GetComponent<PlayerCombat>();
         playerController = GetComponent<PlayerController>();
     }
 
-    private void HandleAnimation(string animation, bool state)
+    private void Update()
     {
-        switch (animation)
+        UpdateStates();
+
+        if(isRunning)
         {
-            case "Run":
-                if (state) playerAnimator.SetTrigger("OnStartRunning");
-                else playerAnimator.SetTrigger("OnStopRunning");
-                break;
-
-            case "Jump":
-                if (state) playerAnimator.SetTrigger("OnJump");
-                break;
-
-            case "Land":
-                if (state) playerAnimator.SetTrigger("OnLand");
-                break;
-
-            default: break;
+            playerAnimator.SetBool("isRunning", true);
         }
+        else
+        {
+            playerAnimator.SetBool("isRunning", false);
+        }
+
+        if(isWallSliding)
+        {
+            playerAnimator.SetBool("isWallSliding", true);
+        }
+        else
+        {
+            playerAnimator.SetBool("isWallSliding", false);
+        }
+
+        if (jumpTrigger) playerAnimator.SetTrigger("jumpTrigger");
+        if (fallTrigger) playerAnimator.SetTrigger("fallTrigger");
+
+        playerAnimator.SetFloat("YSpeed", playerController.playerMovement.YSpeed);
+
     }
 
-    void OnDestroy()
+    private void UpdateStates()
     {
-        PlayerMovement.OnStartRunning -= startRunning;
-        PlayerMovement.OnStopRunning -= stopRunning;
-        PlayerMovement.OnJump -= jump;
-        PlayerMovement.OnLand -= land;
+        isRunning = playerController.playerMovement.IsRunning;
+        isJumping = playerController.playerMovement.IsJumping;
+        isWallJumping = playerController.playerMovement.IsWallJumping;
+        isWallSliding = playerController.playerMovement.IsWallSliding;
+        fallTrigger = playerController.playerMovement.FallTrigger;
+        jumpTrigger = playerController.playerMovement.JumpTrigger;
     }
 }

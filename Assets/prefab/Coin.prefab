@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70dba82a30857a24e8b84014a520fef3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinValue: 10
+  coinValue: 1
 --- !u!61 &5679378788486904839
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -1,13 +1,15 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameUIManager : MonoBehaviour
 {
-    private GameManagerScript gameManagerScript;
     [SerializeField] private GameOverPanel gameOverPanel;
     [SerializeField] private HUDManager hudManager;
     [SerializeField] private PausePanel pausePanel;
 
+    private PlayerController playerController;
+    private GameManagerScript gameManagerScript;
 
     private void Awake()
     {
@@ -16,36 +18,31 @@ public class GameUIManager : MonoBehaviour
 
     void Start()
     {
-        GameObject[] objs = GameObject.FindGameObjectsWithTag("GameManager");
-
-        if (objs.Length > 1)
-        {
-            Destroy(this.gameObject);
-        }
-
-        DontDestroyOnLoad(this.gameObject);
-
-        SceneManager.sceneLoaded += OnLoad;
         gameManagerScript = GameObject.FindObjectOfType<GameManagerScript>();
-    }
-
-    void OnLoad(Scene scene, LoadSceneMode mode)
-    {
-        if (scene.name == "Menu") Destroy(gameObject);
-
-        hudManager.Retry();
+        playerController = GameObject.FindObjectOfType<PlayerController>();
     }
 
     void Update()
     {
-        if( Input.GetKeyDown(KeyCode.Escape) )
+        if( Input.GetKeyDown(KeyCode.Escape) && !playerController.playerCombat.IsDead )
         {
+            if (Time.timeScale > 0) Time.timeScale = 0;
+            else Time.timeScale = 1;
             pausePanel.gameObject.SetActive(!pausePanel.gameObject.activeSelf);
         }
-    }
 
-    private void OnDestroy()
-    {
-        SceneManager.sceneLoaded -= OnLoad;
+
+        if (playerController.playerCombat.IsDead)
+        {
+            if (pausePanel.gameObject.activeSelf) pausePanel.gameObject.SetActive(false);
+            
+            if (Time.timeScale > 0) Time.timeScale = 0; 
+            gameOverPanel.gameObject.SetActive(true);
+        }
+
+        else if (!playerController.playerCombat.IsDead && gameOverPanel.gameObject.activeSelf)
+        {
+            gameOverPanel.gameObject.SetActive(false);
+        }
     }
 }

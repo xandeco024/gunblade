@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,20 +10,10 @@ public class PlayerController : MonoBehaviour
     //componentes
     [Header("Components")]
     private GameManagerScript gameManager;
-    private PlayerCombat playerCombat;
-    private PlayerMovement playerMovement;
-    private Animator cardsAnimator;
 
-    //Lista de Cartas
-    [SerializeField]private GameObject[] cards;
-    [SerializeField]private GameObject[] damageCards;
-
-
-    private bool canMove = true;
-    private bool isDead = false;
-
-    private float currentHealth;
-
+    [Header("Player")]
+    public PlayerCombat playerCombat;
+    public PlayerMovement playerMovement;
 
     private void Awake()
     {
@@ -30,7 +21,6 @@ public class PlayerController : MonoBehaviour
 
         playerCombat = GetComponent<PlayerCombat>();
         playerMovement = GetComponent<PlayerMovement>();
-        cardsAnimator = GetComponent<Animator>();
     }
 
     void Start()
@@ -38,25 +28,22 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    // melhorei a comunicação entre os scripts, TUDO fala com o playercontroller, que fala com cada um dos playerpenis. assim evitando uma teia de aranha terrivel nossa que sono.
+
     void Update()
     {
-
-
+        if (!playerCombat.IsDead)
+        {
+            playerCombat.CombatUpdate();
+            playerMovement.MovementUpdate();
+        }
     }
 
-    public bool isPlayerDead()
+    private void FixedUpdate()
     {
-        return isDead;
+        if (!playerCombat.IsDead && playerMovement.CanMove)
+        {
+            playerMovement.MovementFixedUpdate();
+        }
     }
-
-    public bool canPlayerMove()
-    {
-        return canMove;
-    }
-
-    public void setPlayerCanMove(bool move)
-    {
-        canMove = move;
-    }
-
 }

@@ -1,19 +1,17 @@
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameManagerScript : MonoBehaviour
 {
     private PlayerController playerController;
-    private PlayerCombat playerCombat;
+    //private PlayerCombat playerCombat;
 
-    [Header("PlayerStats")]
-    private int playerHealth;
-    public int PlayerHealth { get { return playerHealth; }}
+    [Header("Stats")]
+    private int balance = 0;
+    private int retryCost = 10;
 
-    private int retryCost = 0;
-    private int playerBalance = 1500;
-    public int PlayerBalance { get { return playerBalance; } set { if (value <= 0) { playerBalance = 0; } else playerBalance = value; } }
+    public int Balance { get { return balance; } set { if (value <= 0) balance = 0; else balance = value; } }
+    public int RetryCost { get { return retryCost; } set { if (value > retryCost) retryCost = value; else if (retryCost <= 0) retryCost = 0; } }
 
     private Vector2 fallPoint = new Vector2(0, 0);
     public Vector2 FallPoint { get { return fallPoint; } set { fallPoint = value; } }
@@ -26,7 +24,6 @@ public class GameManagerScript : MonoBehaviour
     void Start()
     {
         playerController = FindObjectOfType<PlayerController>();
-        playerCombat = playerController.gameObject.GetComponent<PlayerCombat>();
         GameObject[] objs = GameObject.FindGameObjectsWithTag("GameManager");
 
         if (objs.Length > 1)
@@ -43,58 +40,18 @@ public class GameManagerScript : MonoBehaviour
         if (scene.name == "Menu") Destroy(gameObject);
         else
         {
+            if (Time.timeScale <= 0) Time.timeScale = 1;
             playerController = FindObjectOfType<PlayerController>();
         }
     }
 
     void Update()
     {
-        //if (playerController.isPlayerDead())
-        //{
-        //    GameOverHandler(true, retryCost, playerBalance);
-        //}
-        //else GameOverHandler(false, retryCost, playerBalance);
-
-        playerHealth = playerCombat.GetHealth();
 
         if (Input.GetKeyDown(KeyCode.O))
         {
-            PlayerBalance = PlayerBalance + 100;
-            Debug.Log("cu");
+            Balance += 100;
         }
-    }
-    /*public void GameOverHandler(bool dead,float cost, float balance)
-    {
-        if (dead)
-        {
-            if (!gameOverPanel.gameObject.activeSelf)
-            {
-                gameOverPanel.gameObject.SetActive(true);
-            }
-
-            if (retryCost > playerBalance)
-            {
-                gameOverPanel.OverCanvas(cost, balance);
-            }
-            else gameOverPanel.RetryCanvas(cost, balance);
-        }
-
-        else gameOverPanel.gameObject.SetActive(false);
-    }*/
-    public void Retry()
-    {
-        playerBalance -= retryCost;
-        retryCost += 100;
-
-        Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.name);
-
-    }
-
-    public void Menu()
-    {
-        SceneManager.LoadScene("Menu");
-        Destroy(gameObject);
     }
 
     private void OnDestroy()

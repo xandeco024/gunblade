@@ -12,7 +12,7 @@ public class Coin : MonoBehaviour
 
         if (collision.gameObject.tag == "Player")
         {
-            GameObject.FindObjectOfType<GameManagerScript>().PlayerBalance = coinValue;
+            GameObject.FindObjectOfType<GameManagerScript>().Balance += coinValue;
             Destroy(gameObject);
         }
     }

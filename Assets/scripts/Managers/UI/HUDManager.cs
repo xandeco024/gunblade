@@ -1,111 +1,115 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class HUDManager : MonoBehaviour
 {
     //componentes
     [Header("Components")]
     private GameManagerScript gameManagerScript;
-    private PlayerCombat playerCombat;
+    private PlayerController playerController;
 
     //Lista de Cartas
 
     [Header("Hud Elements")]
-    [SerializeField] private GameObject[] cards;
-    [SerializeField] private GameObject[] damageCards;
-    [SerializeField] private GameObject[] AmmoUI;
-    [SerializeField] private GameObject playerImage;
+    [SerializeField] private GameObject[] cardsIMG;
+    [SerializeField] private GameObject[] damageCardsIMG;
+    [SerializeField] private GameObject[] ammoIMG;
+    [SerializeField] private Slider[] ammoSliders;
+    //[SerializeField] private Slider reloadSlider;
+    [SerializeField] private GameObject playerIMG;
 
     [SerializeField] private TextMeshProUGUI coinsText;
 
-    private float currentHealth;
-    //private int currentAmmo;
     private int coins;
 
     private void Awake()
     {
-        gameManagerScript = GameObject.FindObjectOfType<GameManagerScript>();
-        playerCombat = GameObject.FindObjectOfType<PlayerCombat>();
 
-        int NumberOfCoins = PlayerPrefs.GetInt("NumberOfCoins", 0);
     }
 
     void Start()
     {
-
+        gameManagerScript = GameObject.FindObjectOfType<GameManagerScript>();
+        playerController = GameObject.FindObjectOfType<PlayerController>();
     }
 
     void Update()
     {
-        currentHealth = gameManagerScript.PlayerHealth;
-        //currentAmmo = gameManagerScript.PlayerAmmo;
-        coins = gameManagerScript.PlayerBalance;
+        coins = gameManagerScript.Balance;
 
-        coinsText.text = coins.ToString();
-        CardHandler();
-        //AmmoCheck();
-    }
-
-    void CardHandler()
-    {
-         if (currentHealth <= 0)
+        if(!playerController.playerCombat.IsDead)
         {
-            cards[0].SetActive(false);
-            damageCards[0].SetActive(true);
-        }
-
-        else if (currentHealth <= 10)
-        {
-            cards[1].SetActive(false);
-            damageCards[1].SetActive(true);
-        }
-
-        else if (currentHealth <= 20)
-        {
-            cards[2].SetActive(false);
-            damageCards[2].SetActive(true);
-        }
-
-        else if (currentHealth <= 30)
-        {
-            cards[3].SetActive(false);
-            damageCards[3].SetActive(true);
+            coinsText.text = coins.ToString();
+            CardHandler();
+            AmmoHandler();
         }
     }
 
-    public void Retry()
+    private void CardHandler()
     {
-        for (int i = 0; i < cards.Length; i++)
-        {
-            if (cards[i] != null)
-            {
-                cards[i].SetActive(true);
-            }
-        }
+        int[] healthLimits = new int[] { 0, 10, 20, 30 };
 
-        for (int i = 0;i < damageCards.Length; i++)
+        for (int i = 0; i < healthLimits.Length; i++)
         {
-            if (damageCards[i] != null)
+            if (playerController.playerCombat.Health <= healthLimits[i])
             {
-                damageCards[i].SetActive(false);
+                cardsIMG[i].SetActive(false);
+                damageCardsIMG[i].SetActive(true);
+                break;
             }
         }
     }
 
-    /*void AmmoCheck() 
+    private void AmmoHandler()
     {
-        if (currentAmmo == 1) 
+        for (int i = 0; i < ammoIMG.Length; i++)
         {
-            AmmoUI[1].SetActive(false);
+            for (int j = 0; j < ammoIMG[i].transform.childCount; j++)
+            {
+                // Acessa o Image do filho
+                Image img = ammoIMG[i].transform.GetChild(j).GetComponent<Image>();
+                if (i < playerController.playerCombat.Ammo)
+                {
+                    // Restaura a cor original do Image
+                    img.color = new Color(img.color.r, img.color.g, img.color.b, 1f); // Altera o alpha para 1
+                }
+                else
+                {
+                    // Altera a cor do Image para semi-transparente
+                    img.color = new Color(img.color.r, img.color.g, img.color.b, 0.25f); // Altera o alpha para 0.5
+                }
+            }
         }
 
-        else if (currentAmmo == 0) 
+        for (int i = 0; i < ammoSliders.Length; i++)
         {
-            AmmoUI[0].SetActive(false);
+            // Se a munição é menor ou igual ao índice do slider, começa a recarregar
+            if (playerController.playerCombat.Ammo <= i)
+            {
+                ammoSliders[i].gameObject.SetActive(true);
+                StartCoroutine(Reload(ammoSliders[i], playerController.playerCombat.ReloadTime));
+            }
+            else
+            {
+                ammoSliders[i].gameObject.SetActive(false);
+            }
         }
-    }*/
+    }
+
+    IEnumerator Reload(Slider slider, float reloadTime)
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < reloadTime)
+        {
+            slider.value = elapsedTime / reloadTime;
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        slider.value = 1f;
+    }
 }

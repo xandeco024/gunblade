@@ -25,13 +25,19 @@ public class PlayerMovement : MonoBehaviour
     private bool isWallJumping;
     private bool isJumping;
     private bool isRunning;
-    private float horizontalInput;
     private bool jumpTrigger;
+    private bool fallTrigger;
+    private bool canMove = true;
 
-    public static event Action OnStartRunning;
-    public static event Action OnStopRunning;
-    public static event Action OnJump;
-    public static event Action OnLand;
+    [HideInInspector] public bool CanMove { get { return canMove; } set { canMove = value; } }
+    [HideInInspector] public bool IsRunning { get { return isRunning; }}
+    [HideInInspector] public bool IsJumping { get { return isJumping; }}
+    [HideInInspector] public bool JumpTrigger { get { return jumpTrigger; }}
+    [HideInInspector] public bool FallTrigger { get { return fallTrigger; }}
+    [HideInInspector] public float YSpeed { get { return playerRB.velocity.y; }}
+    [HideInInspector] public bool IsWallJumping { get { return isWallJumping; }}
+
+    [HideInInspector] public bool IsWallSliding { get { return isWallSliding; }}
 
     private void Start()
     {
@@ -41,53 +47,29 @@ public class PlayerMovement : MonoBehaviour
         playerSR = GetComponent<SpriteRenderer>();
     }
 
-    private void Update()
+    public void MovementUpdate()
     {
-        if(playerController.canPlayerMove() && !playerController.isPlayerDead())
-        {
-            inputCheck();
-            WallSlide();
-        }
+        WallSlide();
+
+        if(Input.GetKeyDown(KeyCode.Space)) jumpTrigger = true;
     }
 
-    private void FixedUpdate()
+    public void MovementFixedUpdate()
     {
         Jump(jumpTrigger);
-        Move(horizontalInput);
+        Move();
     }
 
-    private void OnEnable()
+    private void LateUpdate()
     {
-
+        if (fallTrigger) fallTrigger = false;
     }
 
-    void inputCheck()
+    void Move()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            jumpTrigger = true;
-        }
-            
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || !GroundCheck())
-        {
-            horizontalInput = Input.GetAxis("Horizontal");
-        }
+        float horizontalInput = Input.GetAxis("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
-        {
-            OnStartRunning.Invoke();
-        }
-
-        else if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
-        {
-            horizontalInput = 0;
-            OnStopRunning.Invoke();
-        }
-    }
-
-    void Move(float horizontalInput)
-    {
-        if(!isWallSliding && !isWallJumping && playerController.canPlayerMove()) 
+        if (!isWallSliding && !isWallJumping && canMove)
         {
             Vector2 playerVelocity = playerRB.velocity;
             playerVelocity.x = (horizontalInput * moveSpeed);
@@ -95,10 +77,11 @@ public class PlayerMovement : MonoBehaviour
             if (horizontalInput > 0 && facingDirection == -1) Flip();
             else if (horizontalInput < 0 && facingDirection == 1) Flip();
 
-            //isRunning = true;
+            if (horizontalInput != 0) isRunning = true;
+            else isRunning = false;
         }
 
-        //else isRunning = false;
+        else isRunning = false;
     }
 
     void Jump(bool trigger)
@@ -122,7 +105,12 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
-        if(isJumping && GroundCheck()) isJumping = false;
+        if (isJumping && GroundCheck())
+        {
+            isJumping = false;
+            Debug.Log("fall");
+            fallTrigger = true;
+        }
 
         if (isWallJumping)
         {
@@ -184,25 +172,5 @@ public class PlayerMovement : MonoBehaviour
     {
         Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, Color.green);
         return Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);
-    }
-
-    public bool IsWallJumping()
-    {
-        return isWallJumping;
-    }
-
-    public bool IsJumping()
-    {
-        return isJumping;
-    }
-
-    public bool IsWallSliding()
-    {
-        return isWallSliding;
-    }
-
-    public bool IsRunning()
-    {
-        return isRunning;
     }
 }

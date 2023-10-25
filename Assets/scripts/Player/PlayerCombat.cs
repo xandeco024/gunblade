@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Experimental.AI;
+using UnityEngine.Rendering.Universal;
 
 public class PlayerCombat : MonoBehaviour
 {
@@ -12,10 +13,7 @@ public class PlayerCombat : MonoBehaviour
     private Rigidbody2D playerRB;
     private CapsuleCollider2D playerCol;
     private SpriteRenderer playerSR;
-    
-
-    private bool firstKeyPressed = false;
-    private float timeFirstKeyPressed;
+    public bool debug;
 
     [Header("Hero Stats")]
     [SerializeField] private int maxHealth;
@@ -26,9 +24,6 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] private bool isDead = false;
     private int facingDirection;
 
-    
-    
-
     [Header("Gun")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float recoilForce;
@@ -36,32 +31,36 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] float shotCD;
     [SerializeField] float dashDuration;
     [SerializeField] private float reloadTime;
-    private bool fireTrigger = false;
     private bool isShooting = false;
-    private float shotCDCounter;
-    private bool canShoot;
+    private bool canShoot = true;
     private Vector2 firePoint;
     private Vector2 fireDirection;
     private int rotation = 0;
+    private bool shotTrigger;
 
-
-    /*isso aqui serve para ajustar o tanto munição que ele possui
-      para poder atirar
-     */
 
     [Header("Blade")]
     [SerializeField] private Vector2 attackPoint;
     [SerializeField] private float attackDamage;
     [SerializeField] private float attackRange;
     [SerializeField] float attackDuration;
-    private float attackDurationCounter;
-    private bool attackTrigger = false;
+    [SerializeField] float attackCD;
     private bool isAttacking = false;
+    private bool canAttack = true;
     private int attackAnimIndex;
-    private bool canAttack;
+    private bool attackTrigger;
 
-    private PlayerMovement playerMovment;
-    //private PlayerController playerController;
+    [HideInInspector] public int Ammo { get { return ammo; } }
+    [HideInInspector] public int Health { get { return currentHealth; } }
+    [HideInInspector] public bool IsDead { get { return isDead; } }
+    [HideInInspector] public bool IsAttacking { get { return isAttacking; } }
+    [HideInInspector] public bool IsShooting { get { return isShooting; } }
+    [HideInInspector] public bool CanShoot { get { return canShoot; } }
+    [HideInInspector] public float ReloadTime { get { return reloadTime; } }
+    [HideInInspector] public float ShotCD { get { return shotCD; } }
+    [HideInInspector] public bool AttackTrigger { get { return attackTrigger; } }
+    [HideInInspector] public int AttackIndex { get { return attackAnimIndex; } }
+    [HideInInspector] public bool ShotTrigger { get { return shotTrigger; } }
 
 
     private void Start()
@@ -71,8 +70,6 @@ public class PlayerCombat : MonoBehaviour
         playerCol = GetComponent<CapsuleCollider2D>();
         playerSR = GetComponent<SpriteRenderer>();
 
-        playerMovment = GetComponent<PlayerMovement>();
-
         currentHealth = maxHealth;
 
         firePoint = new Vector2(1, 0);
@@ -80,50 +77,14 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
-        inputCheck();
+        if (debug) ShowDebug();
 
         if (ammo > 2) ammo = 2;
-        Debug.Log(ammo);
-
-        if (Input.GetKeyDown(KeyCode.K)) TakeDamage(currentHealth, false);
-
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            TakeDamage(1, true);
-        }
-
-        if (currentHealth <= 0)
-        {
-            // = true;
-        }
 
         if(transform.localScale.x > 0) facingDirection = 1;
         else if (transform.localScale.x < 0) facingDirection= -1;
 
-        attack(attackTrigger);
-
-        if(Input.GetKeyDown(KeyCode.W))
-        {
-            rotation = 90;
-            fireDirection = new Vector2(0, 1);
-        }
-        else if (Input.GetKeyDown(KeyCode.A))
-        {
-            rotation = 180;
-            fireDirection = new Vector2(-1, 0);
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            rotation = 270;
-            fireDirection = new Vector2(0, -1);
-        }
-        else if (Input.GetKeyDown(KeyCode.D))
-        {
-            rotation = 0;
-            fireDirection = new Vector2(1, 0);
-        }
-
-        else if (CheckKeys(KeyCode.A, KeyCode.W, .2f))
+        /*else if (CheckKeys(KeyCode.A, KeyCode.W, .2f))
         {
             rotation = 135;
             fireDirection = new Vector2(-0.707f, 0.707f); // isso aq n funciona direito n�o, tem q pensar num jeito melhor
@@ -145,133 +106,152 @@ public class PlayerCombat : MonoBehaviour
         {
             rotation = 315;
             fireDirection = new Vector2(0.707f, -0.707f);
-        }
+        }*/
 
         firePoint = new Vector2(transform.position.x, transform.position.y) + fireDirection * 4;
-        DrawCircle(firePoint, attackRange, Color.red);
+
+        if (currentHealth <= 0)
+        {
+            isDead = true;
+        }
     }
 
-    private void FixedUpdate()
+    private void LateUpdate()
     {
-        shoot(fireTrigger);
+        Debug.Log("Resetou");
+        if (attackTrigger) attackTrigger = false;
+        if (shotTrigger) shotTrigger = false;
     }
 
-    void inputCheck()
+    public void CombatUpdate()
     {
+        // Pra testar a vida do bixo se ele ta morrendo e afins.
+
+        if (Input.GetKeyDown(KeyCode.K)) TakeDamage(currentHealth, false);
+        if (Input.GetKeyDown(KeyCode.L)) TakeDamage(10, true);
+
+        // Checa inputs pra setar o firePoint
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            rotation = 90;
+            fireDirection = new Vector2(0, 1);
+        }
+        else if (Input.GetKeyDown(KeyCode.A))
+        {
+            rotation = 180;
+            fireDirection = new Vector2(-1, 0);
+        }
+        else if (Input.GetKeyDown(KeyCode.S))
+        {
+            rotation = 270;
+            fireDirection = new Vector2(0, -1);
+        }
+        else if (Input.GetKeyDown(KeyCode.D))
+        {
+            rotation = 0;
+            fireDirection = new Vector2(1, 0);
+        }
+
+        // Checa inputs e condicoes pra performar ataque e disparo
+
         if (Input.GetKeyDown(KeyCode.F))
         {
-            attackTrigger = true;
+            if(canAttack)
+            {
+                StartCoroutine(Attack());
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            fireTrigger = true;
+            if(canShoot && ammo > 0)
+            {
+                StartCoroutine(ShootDash());
+            }
         }
     }
 
-    void attack(bool trigger)
+    // transformei o ataque em uma corrotina, pra gerenciar melhor o tempo de ataque e cooldown, pra facilitar a vida nas animações.
+    IEnumerator Attack()
     {
+        if (attackAnimIndex >= 3) attackAnimIndex = 0;
+
+
+        isAttacking = true;
+        canAttack = false;
+        attackTrigger = true;
+
         Vector2 translatedAttackPoint = new Vector2(transform.position.x, transform.position.y) + attackPoint * facingDirection;
         DrawCircle(translatedAttackPoint, attackRange, Color.red);
 
-        if(isAttacking)
+        isAttacking = true;
+        Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(translatedAttackPoint, attackRange, enemyLayer);
+        foreach (Collider2D enemy in hitEnemies)
         {
-            attackDurationCounter += Time.deltaTime;
-
-            if(attackDurationCounter >= attackDuration)
-            {
-                isAttacking = false;
-                attackDurationCounter = 0;
-            }
+            enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage, true);
         }
+        //Debug.Log("Atacou " + hitEnemies.Length + " inimigos");
+        attackAnimIndex++;
 
-        if (attackAnimIndex >= 3) attackAnimIndex = 0;
+        yield return new WaitForSeconds(attackDuration);
 
-        if(trigger)
-        {
-            if(!isAttacking)
-            {
-                isAttacking = true;
-                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(translatedAttackPoint, attackRange, enemyLayer);
-                foreach (Collider2D enemy in hitEnemies)
-                {
-                    enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage, true);
-                }
-                Debug.Log("Atacou " + hitEnemies.Length + " inimigos");
-                attackAnimIndex++;
-                //Debug.Log("anima��o de ataque " + attackAnimIndex);
-            }
-            attackTrigger = false;
-        }
+        isAttacking = false;
+
+        yield return new WaitForSeconds(attackCD);
+
+        canAttack = true;
+
     }
 
-    void shoot(bool trigger)
+    // mais ou menos o que fiz com o ataque só que no dash.
+
+    IEnumerator ShootDash()
     {
-
-        DrawCircle(transform.position, 4, Color.cyan);
-
-        if (!canShoot)
-        {
-            shotCDCounter += Time.deltaTime;
-
-            if (shotCDCounter >= shotCD)
-            {
-                canShoot = true;
-                shotCDCounter = 0;
-            }
-        }
-
-        if (trigger)
-        {
-            if (ammo > 0)
-            {
-                if (!isShooting && canShoot && !playerMovment.GroundCheck())
-                {
-                    ammo--;
-                    //Debug.Log("atirou");
-                    StartCoroutine(AmmoCD(reloadTime));
-                    StartCoroutine(DashCorroutine(5 * dashDuration));
-
-                }
-
-                if (!isShooting && canShoot && playerMovment.GroundCheck())
-                {
-                    ammo--;
-                    StartCoroutine(AmmoCD(reloadTime));
-                    StartCoroutine(DashCorroutine(dashDuration));
-                }
-            }
-
-            fireTrigger = false;
-        }
-    }
-
-    IEnumerator AmmoCD (float time)
-    {
-        yield return new WaitForSeconds(time);
-        ammo++;
-    }
-
-    IEnumerator DashCorroutine(float dashDuration)
-    {
-        //Debug.Log("Marco");
-
         isShooting = true;
-        playerController.setPlayerCanMove(false);
+        canShoot = false;
+        shotTrigger = true;
+        playerController.playerMovement.CanMove = false;
+
+        ammo--;
+        StartCoroutine(AmmoCD());
 
         GameObject bulletInstance = Instantiate(bulletPrefab, firePoint, Quaternion.Euler(0, 0, rotation));
-        //bulletInstance.GetComponent<Rigidbody2D>().velocity = fireDirection * 20;
 
         playerRB.velocity = playerRB.velocity + -fireDirection * recoilForce;
 
         yield return new WaitForSeconds(dashDuration);
 
-        //playerRB.velocity.Normalize();
-
-        playerController.setPlayerCanMove(true);
+        playerController.playerMovement.CanMove = true;
         isShooting = false;
 
-        //Debug.Log("Polo");
+        yield return new WaitForSeconds(shotCD);
+
+        canShoot = true;
+    }
+
+    // adiciona uma munição quando passar o reloadtime
+    IEnumerator AmmoCD ()
+    {
+        yield return new WaitForSeconds(reloadTime);
+        ammo++;
+    }
+
+    void ShowDebug() // pra quando algo der errado e vc precisar de confirmação visual.
+    {
+        DrawCircle(transform.position, 4, Color.cyan); // firepoint circle
+        Vector2 translatedAttackPoint = new Vector2(transform.position.x, transform.position.y) + attackPoint * facingDirection;
+        DrawCircle(translatedAttackPoint, attackRange, Color.red); // attackpoint
+        DrawCircle(firePoint, attackRange, Color.green); // firepoint
+
+        if(isAttacking)
+        {
+            Debug.Log("Deveria ter atacado");
+        }
+        if(IsShooting)
+        {
+            Debug.Log("Deveria ter atirado");
+        }
     }
 
     public void TakeDamage(int damage, bool knockBack)
@@ -294,18 +274,14 @@ public class PlayerCombat : MonoBehaviour
         playerSR.color = flashColor;
         yield return new WaitForSeconds(.1f);
         playerSR.color = originalColor;
-        yield return new WaitForSeconds(.1f);
-        playerSR.color = flashColor;
-        yield return new WaitForSeconds(.1f);
-        playerSR.color = originalColor;
     }
 
     IEnumerator KnockBack()
     {
-        playerController.setPlayerCanMove(false);
+        playerController.playerMovement.CanMove = false;
         playerRB.AddForce(new Vector2(-facingDirection, 1) * knockBackForce, ForceMode2D.Impulse);
         yield return new WaitForSeconds(knockBackDuration);
-        playerController.setPlayerCanMove(true);
+        playerController.playerMovement.CanMove = true;
     }
 
     void DrawCircle(Vector3 position, float radius, Color color)
@@ -325,11 +301,6 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    public int GetHealth()
-    {
-        return currentHealth;
-    }
-
     public void SetHealth(int health)
     {
         currentHealth = health;
@@ -338,30 +309,5 @@ public class PlayerCombat : MonoBehaviour
     public void Heal(int health)
     {
         currentHealth += health;
-    }
-
-    public bool CheckKeys(KeyCode firstKey, KeyCode secondKey, float timeLimit)
-    {
-        if (Input.GetKeyDown(firstKey))
-        {
-            firstKeyPressed = true;
-            timeFirstKeyPressed = Time.time;
-        }
-
-        if (firstKeyPressed && Input.GetKeyDown(secondKey))
-        {
-            if (Time.time - timeFirstKeyPressed <= timeLimit)
-            {
-                firstKeyPressed = false;
-                return true;
-            }
-            else
-            {
-                firstKeyPressed = false;
-                return false;
-            }
-        }
-
-        return false;
     }
 }

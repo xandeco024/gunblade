@@ -11,6 +11,7 @@ TagManager:
   - ChangeScene
   - GameManager
   - Ignore
+  - GameUIManager
   layers:
   - Default
   - TransparentFX
