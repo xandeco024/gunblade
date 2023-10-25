@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class Coin : MonoBehaviour
 {
-    private void OnTriggerEnter2D(Collider2D collision)
+    [SerializeField] private int coinValue;
+
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(collision.transform.tag == "Player")
+        Debug.Log("BATUE");
+
+        if (collision.gameObject.tag == "Player")
         {
-            PlayerController.NumberOfCoins++;
-            PlayerPrefs.SetInt("NumberOfCoins", PlayerController.NumberOfCoins);
+            GameObject.FindObjectOfType<GameManagerScript>().PlayerBalance = coinValue;
             Destroy(gameObject);
         }
     }

@@ -4,27 +4,50 @@ using UnityEngine;
 
 public class Parallax : MonoBehaviour
 {
-    private float Lenght;
-    private float StartPos;
-    public GameObject cam;
+    public GameObject CameraPlayer;
 
-    public float ParallaxEffect;
+    private float sizeX, sizeY, startPosX, startPosY;
+    public float parallaxXSpeed, parallaxYSpeed;
 
     void Start()
     {
-        StartPos = transform.position.x;
-        Lenght = GetComponent<SpriteRenderer>().bounds.size.x;
+        startPosX = transform.position.x;
+        startPosY = transform.position.y;
+        sizeX = GetComponent<SpriteRenderer>().bounds.size.x;
+        sizeY = GetComponent<SpriteRenderer>().bounds.size.y * 4;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        float temp = (cam.transform.position.x * (1 - ParallaxEffect));
-        float dist = (cam.transform.position.x * ParallaxEffect);
+        // x
+        float tempX = (CameraPlayer.transform.position.x * (1 - parallaxXSpeed));
+        float distX = (CameraPlayer.transform.position.x * parallaxXSpeed);
 
-        transform.position = new Vector3(StartPos + dist, transform.position.y, transform.position.z);
+        transform.position = new Vector2(startPosX + distX, transform.position.y);
 
-        if (temp > StartPos + Lenght) StartPos += Lenght;
-        else if (temp < StartPos - Lenght) StartPos -= Lenght;
+        if (tempX > startPosX + sizeX / 2)
+        {
+            startPosX += sizeX;
+        }
+        else if (tempX < startPosX - sizeX / 2)
+        {
+            startPosX -= sizeX;
+        }
+
+        // y
+
+        float tempY = (CameraPlayer.transform.position.y * (1 - parallaxYSpeed));
+        float distY = (CameraPlayer.transform.position.y * parallaxYSpeed);
+
+        transform.position = new Vector2(transform.position.x, startPosY + distY / 2);
+
+        if (tempY > startPosY + sizeY / 2)
+        {
+            startPosY += sizeY;
+        }
+        else if (tempY < startPosY - sizeY / 2)
+        {
+            startPosY -= sizeY;
+        }
     }
 }

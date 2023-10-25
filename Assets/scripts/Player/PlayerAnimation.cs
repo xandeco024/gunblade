@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class PlayerAnimation : MonoBehaviour
@@ -21,6 +20,25 @@ public class PlayerAnimation : MonoBehaviour
     private bool isShooting;
     private bool isDying;
 
+    // [Header("State Actions")]
+    private Action startRunning;
+    private Action stopRunning;
+    private Action jump;
+    private Action land;
+
+    void Awake()
+    {
+        startRunning = () => HandleAnimation("Run", true);
+        stopRunning = () => HandleAnimation("Run", false);
+        jump = () => HandleAnimation("Jump", true);
+        land = () => HandleAnimation("Land", true);
+
+        PlayerMovement.OnStartRunning += startRunning;
+        PlayerMovement.OnStopRunning += stopRunning;
+        PlayerMovement.OnJump += jump;
+        PlayerMovement.OnLand += land;
+    }
+
     void Start()
     {
         playerAnimator = GetComponent<Animator>();
@@ -28,18 +46,33 @@ public class PlayerAnimation : MonoBehaviour
         playerCombat = GetComponent<PlayerCombat>();
         playerController = GetComponent<PlayerController>();
     }
-    void Update()
-    {
-        UpdateState();
 
-        if (isRunning) playerAnimator.SetBool("isRunning", true);
+    private void HandleAnimation(string animation, bool state)
+    {
+        switch (animation)
+        {
+            case "Run":
+                if (state) playerAnimator.SetTrigger("OnStartRunning");
+                else playerAnimator.SetTrigger("OnStopRunning");
+                break;
+
+            case "Jump":
+                if (state) playerAnimator.SetTrigger("OnJump");
+                break;
+
+            case "Land":
+                if (state) playerAnimator.SetTrigger("OnLand");
+                break;
+
+            default: break;
+        }
     }
 
-    void UpdateState()
+    void OnDestroy()
     {
-        isRunning = playerMovement.IsRunning();
-        isJumping = playerMovement.IsJumping();
-        isWallJumping = playerMovement.IsWallJumping();
-        isWallSliding = playerMovement.IsWallSliding();
+        PlayerMovement.OnStartRunning -= startRunning;
+        PlayerMovement.OnStopRunning -= stopRunning;
+        PlayerMovement.OnJump -= jump;
+        PlayerMovement.OnLand -= land;
     }
 }

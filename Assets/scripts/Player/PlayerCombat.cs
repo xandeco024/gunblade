@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -11,20 +12,27 @@ public class PlayerCombat : MonoBehaviour
     private Rigidbody2D playerRB;
     private CapsuleCollider2D playerCol;
     private SpriteRenderer playerSR;
+    
+
+    private bool firstKeyPressed = false;
+    private float timeFirstKeyPressed;
 
     [Header("Hero Stats")]
-    [SerializeField] private float maxHealth;
+    [SerializeField] private int maxHealth;
     [SerializeField] private LayerMask enemyLayer;
     [SerializeField] private float knockBackForce;
     [SerializeField] private float knockBackDuration;
-    private float currentHealth;
-    private bool isDead = false;
+    [SerializeField] private int currentHealth;
+    [SerializeField] private bool isDead = false;
     private int facingDirection;
+
+    
     
 
     [Header("Gun")]
     [SerializeField] private GameObject bulletPrefab;
     [SerializeField] private float recoilForce;
+    [SerializeField] private int ammo = 2;
     [SerializeField] float shotCD;
     [SerializeField] float dashDuration;
     [SerializeField] private float reloadTime;
@@ -35,6 +43,11 @@ public class PlayerCombat : MonoBehaviour
     private Vector2 firePoint;
     private Vector2 fireDirection;
     private int rotation = 0;
+
+
+    /*isso aqui serve para ajustar o tanto muni√ß√£o que ele possui
+      para poder atirar
+     */
 
     [Header("Blade")]
     [SerializeField] private Vector2 attackPoint;
@@ -47,6 +60,9 @@ public class PlayerCombat : MonoBehaviour
     private int attackAnimIndex;
     private bool canAttack;
 
+    private PlayerMovement playerMovment;
+    //private PlayerController playerController;
+
 
     private void Start()
     {
@@ -54,6 +70,8 @@ public class PlayerCombat : MonoBehaviour
         playerRB = GetComponent<Rigidbody2D>();
         playerCol = GetComponent<CapsuleCollider2D>();
         playerSR = GetComponent<SpriteRenderer>();
+
+        playerMovment = GetComponent<PlayerMovement>();
 
         currentHealth = maxHealth;
 
@@ -64,7 +82,12 @@ public class PlayerCombat : MonoBehaviour
     {
         inputCheck();
 
-        if(Input.GetKeyDown(KeyCode.L))
+        if (ammo > 2) ammo = 2;
+        Debug.Log(ammo);
+
+        if (Input.GetKeyDown(KeyCode.K)) TakeDamage(currentHealth, false);
+
+        if (Input.GetKeyDown(KeyCode.L))
         {
             TakeDamage(1, true);
         }
@@ -100,28 +123,31 @@ public class PlayerCombat : MonoBehaviour
             fireDirection = new Vector2(1, 0);
         }
 
-        else if (Input.GetKeyDown(KeyCode.E))
+        else if (CheckKeys(KeyCode.A, KeyCode.W, .2f))
+        {
+            rotation = 135;
+            fireDirection = new Vector2(-0.707f, 0.707f); // isso aq n funciona direito nÔøΩo, tem q pensar num jeito melhor
+        }
+
+        else if (CheckKeys(KeyCode.D, KeyCode.W, .2f))
         {
             rotation = 45;
             fireDirection = new Vector2(0.707f, 0.707f);
         }
-        else if (Input.GetKeyDown(KeyCode.Q))
-        {
-            rotation = 135;
-            fireDirection = new Vector2(-0.707f, 0.707f);
-        }
-        else if (Input.GetKeyDown(KeyCode.Z))
+
+        else if (CheckKeys(KeyCode.A, KeyCode.S, .2f))
         {
             rotation = 225;
             fireDirection = new Vector2(-0.707f, -0.707f);
         }
-        else if (Input.GetKeyDown(KeyCode.X))
+
+        else if (CheckKeys(KeyCode.D, KeyCode.S, .2f))
         {
             rotation = 315;
             fireDirection = new Vector2(0.707f, -0.707f);
         }
 
-        firePoint = new Vector2(transform.position.x, transform.position.y) + fireDirection * 2;
+        firePoint = new Vector2(transform.position.x, transform.position.y) + fireDirection * 4;
         DrawCircle(firePoint, attackRange, Color.red);
     }
 
@@ -173,7 +199,7 @@ public class PlayerCombat : MonoBehaviour
                 }
                 Debug.Log("Atacou " + hitEnemies.Length + " inimigos");
                 attackAnimIndex++;
-                //Debug.Log("animaÁ„o de ataque " + attackAnimIndex);
+                //Debug.Log("animaÔøΩÔøΩo de ataque " + attackAnimIndex);
             }
             attackTrigger = false;
         }
@@ -182,7 +208,7 @@ public class PlayerCombat : MonoBehaviour
     void shoot(bool trigger)
     {
 
-        DrawCircle(transform.position, 2, Color.cyan);
+        DrawCircle(transform.position, 4, Color.cyan);
 
         if (!canShoot)
         {
@@ -197,16 +223,33 @@ public class PlayerCombat : MonoBehaviour
 
         if (trigger)
         {
-            if(!isShooting && canShoot)
+            if (ammo > 0)
             {
+                if (!isShooting && canShoot && !playerMovment.GroundCheck())
+                {
+                    ammo--;
+                    //Debug.Log("atirou");
+                    StartCoroutine(AmmoCD(reloadTime));
+                    StartCoroutine(DashCorroutine(5 * dashDuration));
 
-                //Debug.Log("atirou");
-                StartCoroutine(DashCorroutine(dashDuration));
+                }
 
+                if (!isShooting && canShoot && playerMovment.GroundCheck())
+                {
+                    ammo--;
+                    StartCoroutine(AmmoCD(reloadTime));
+                    StartCoroutine(DashCorroutine(dashDuration));
+                }
             }
 
             fireTrigger = false;
         }
+    }
+
+    IEnumerator AmmoCD (float time)
+    {
+        yield return new WaitForSeconds(time);
+        ammo++;
     }
 
     IEnumerator DashCorroutine(float dashDuration)
@@ -231,7 +274,7 @@ public class PlayerCombat : MonoBehaviour
         //Debug.Log("Polo");
     }
 
-    public void TakeDamage(float damage, bool knockBack)
+    public void TakeDamage(int damage, bool knockBack)
     {
         currentHealth -= damage;
         StartCoroutine(Flash());
@@ -282,18 +325,43 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    public float GetHealth()
+    public int GetHealth()
     {
         return currentHealth;
     }
 
-    public void SetHealth(float health)
+    public void SetHealth(int health)
     {
         currentHealth = health;
     }
 
-    public void Heal(float health)
+    public void Heal(int health)
     {
         currentHealth += health;
+    }
+
+    public bool CheckKeys(KeyCode firstKey, KeyCode secondKey, float timeLimit)
+    {
+        if (Input.GetKeyDown(firstKey))
+        {
+            firstKeyPressed = true;
+            timeFirstKeyPressed = Time.time;
+        }
+
+        if (firstKeyPressed && Input.GetKeyDown(secondKey))
+        {
+            if (Time.time - timeFirstKeyPressed <= timeLimit)
+            {
+                firstKeyPressed = false;
+                return true;
+            }
+            else
+            {
+                firstKeyPressed = false;
+                return false;
+            }
+        }
+
+        return false;
     }
 }

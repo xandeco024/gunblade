@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
@@ -7,10 +8,12 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D playerRB;
     private CapsuleCollider2D playerCol;
     private SpriteRenderer playerSR;
+    private PlayerAnimation playerAnimation;
 
     [Header("Movement Status")]
     [SerializeField] private float moveSpeed;
     [SerializeField] private float jumpForce;
+    [SerializeField] private Vector2 wallJumpForce;
     [SerializeField] private float wallSlideSpeed;
     [SerializeField] private float wallCheckDistance = 1.25f;
     [SerializeField] private float groundCheckDistance = 1.25f;
@@ -24,6 +27,11 @@ public class PlayerMovement : MonoBehaviour
     private bool isRunning;
     private float horizontalInput;
     private bool jumpTrigger;
+
+    public static event Action OnStartRunning;
+    public static event Action OnStopRunning;
+    public static event Action OnJump;
+    public static event Action OnLand;
 
     private void Start()
     {
@@ -48,23 +56,33 @@ public class PlayerMovement : MonoBehaviour
         Move(horizontalInput);
     }
 
+    private void OnEnable()
+    {
+
+    }
+
     void inputCheck()
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
             jumpTrigger = true;
         }
-
+            
         if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || !GroundCheck())
         {
             horizontalInput = Input.GetAxis("Horizontal");
         }
 
+        if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))
+        {
+            OnStartRunning.Invoke();
+        }
+
         else if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
         {
             horizontalInput = 0;
+            OnStopRunning.Invoke();
         }
-
     }
 
     void Move(float horizontalInput)
@@ -77,10 +95,10 @@ public class PlayerMovement : MonoBehaviour
             if (horizontalInput > 0 && facingDirection == -1) Flip();
             else if (horizontalInput < 0 && facingDirection == 1) Flip();
 
-            isRunning = true;
+            //isRunning = true;
         }
 
-        else isRunning = false;
+        //else isRunning = false;
     }
 
     void Jump(bool trigger)
@@ -98,7 +116,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 Flip();
                 playerRB.velocity = new Vector2(0, 0);
-                playerRB.AddForce(new Vector2(10 * facingDirection, 10), ForceMode2D.Impulse);
+                playerRB.AddForce(new Vector2(wallJumpForce.x * facingDirection, wallJumpForce.y), ForceMode2D.Impulse);
 
                 isWallJumping = true;
             }
@@ -162,7 +180,7 @@ public class PlayerMovement : MonoBehaviour
         return Physics2D.Raycast(transform.position, transform.right * facingDirection, wallCheckDistance, wallLayer);
     }
 
-    private bool GroundCheck()
+    public bool GroundCheck()
     {
         Debug.DrawRay(transform.position, Vector3.down * groundCheckDistance, Color.green);
         return Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, groundLayer);

@@ -13,9 +13,14 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private float maxHealth;
     [SerializeField] private float knockBackForce;
     [SerializeField] private float knockBackDuration;
+    [SerializeField] private int coinAmount;
     private float currentHealth;
+    private bool isDead = false;
     private int facingDirection;
     private Color originalColor;
+
+    [SerializeField] GameObject coinPrefab;
+    [SerializeField] GameObject explosionParticle;
 
     private void Awake()
     {
@@ -27,12 +32,34 @@ public class EnemyHealth : MonoBehaviour
     void Start()
     {
         originalColor = enemySR.color;
+        currentHealth = maxHealth;
     }
 
     void Update()
     {
         if (transform.localScale.x > 0) facingDirection = 1;
         else if (transform.localScale.x < 0) facingDirection = -1;
+
+        if(currentHealth <= 0)
+        {
+            isDead = true;
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        GameObject blood = Instantiate(explosionParticle, transform.position, Quaternion.identity);
+
+        for (int i = 0; i < coinAmount; i++)
+        {
+            Vector2 direction = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+
+            GameObject coin = Instantiate(coinPrefab, transform.position, Quaternion.identity);
+            coin.GetComponent<Rigidbody2D>().AddForce(direction * 10, ForceMode2D.Impulse);
+        }
+
+        Destroy(gameObject);
     }
 
     public void TakeDamage(float damage, bool knockBack)

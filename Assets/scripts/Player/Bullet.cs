@@ -37,17 +37,20 @@ public class Bullet : MonoBehaviour
     {
         if (collision != null)
         {
-            Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, explosionRange, enemyLayer);
-            foreach (Collider2D enemy in hitEnemies)
+            if (collision.gameObject.tag != "Ignore")
             {
-                enemy.GetComponent<EnemyHealth>().TakeDamage(explosionDamage, true);
+                Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, explosionRange, enemyLayer);
+                foreach (Collider2D enemy in hitEnemies)
+                {
+                    enemy.GetComponent<EnemyHealth>().TakeDamage(explosionDamage, true);
+                }
+                Debug.Log("Pegou " + hitEnemies.Length + " inimigos");
+
+                Instantiate(explosionParticle, transform.position, Quaternion.identity);
+
+                Debug.Log("bateu");
+                DestroyBullet();
             }
-            Debug.Log("Pegou " + hitEnemies.Length + " inimigos");
-
-            Instantiate(explosionParticle, transform.position, Quaternion.identity);
-
-            Debug.Log("bateu");
-            DestroyBullet();
         }
     }   
 
