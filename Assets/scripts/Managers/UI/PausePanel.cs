@@ -5,6 +5,9 @@ using UnityEngine.SceneManagement;
 
 public class PausePanel : MonoBehaviour
 {
+    public bool IsPauseOn = false;
+
+    [SerializeField] private GameObject panel;
     void Start()
     {
         
@@ -12,11 +15,16 @@ public class PausePanel : MonoBehaviour
 
     void Update()
     {
-        
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            IsPauseOn = true;
+            panel.gameObject.SetActive(true);
+        }
     }
 
     public void Resume()
     {
+        IsPauseOn = false;
         if (Time.timeScale <= 0) Time.timeScale = 1;
         gameObject.SetActive(false);
     }

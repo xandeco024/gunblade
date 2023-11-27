@@ -44,11 +44,11 @@ public class Bullet : MonoBehaviour
                 {
                     enemy.GetComponent<EnemyHealth>().TakeDamage(explosionDamage, true);
                 }
-                Debug.Log("Pegou " + hitEnemies.Length + " inimigos");
+                //Debug.Log("Pegou " + hitEnemies.Length + " inimigos");
 
                 Instantiate(explosionParticle, transform.position, Quaternion.identity);
 
-                Debug.Log("bateu");
+                //Debug.Log("bateu");
                 DestroyBullet();
             }
         }

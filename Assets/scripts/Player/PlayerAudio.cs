@@ -114,7 +114,6 @@ public class PlayerAudio : MonoBehaviour
         // ataque
 
         isAttacking = playerController.playerCombat.IsAttacking;
-        attackIndex = playerController.playerCombat.AttackIndex;
         isShooting = playerController.playerCombat.IsShooting;
     }
 }

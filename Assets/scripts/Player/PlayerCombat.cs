@@ -35,8 +35,8 @@ public class PlayerCombat : MonoBehaviour
     private bool canShoot = true;
     private Vector2 firePoint;
     private Vector2 fireDirection;
-    private int rotation = 0;
-    private bool shotTrigger;
+    private float rotation = 0;
+    public bool shotTrigger;
 
 
     [Header("Blade")]
@@ -47,8 +47,8 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] float attackCD;
     private bool isAttacking = false;
     private bool canAttack = true;
-    private int attackAnimIndex;
-    private bool attackTrigger;
+   
+    public bool attackTrigger;
 
     [HideInInspector] public int Ammo { get { return ammo; } }
     [HideInInspector] public int Health { get { return currentHealth; } }
@@ -58,9 +58,9 @@ public class PlayerCombat : MonoBehaviour
     [HideInInspector] public bool CanShoot { get { return canShoot; } }
     [HideInInspector] public float ReloadTime { get { return reloadTime; } }
     [HideInInspector] public float ShotCD { get { return shotCD; } }
-    [HideInInspector] public bool AttackTrigger { get { return attackTrigger; } }
-    [HideInInspector] public int AttackIndex { get { return attackAnimIndex; } }
-    [HideInInspector] public bool ShotTrigger { get { return shotTrigger; } }
+    [HideInInspector] public float AttackCD { get { return attackCD; } }
+    [HideInInspector] public float Rotation { get { return rotation; } }
+
 
 
     private void Start()
@@ -69,6 +69,7 @@ public class PlayerCombat : MonoBehaviour
         playerRB = GetComponent<Rigidbody2D>();
         playerCol = GetComponent<CapsuleCollider2D>();
         playerSR = GetComponent<SpriteRenderer>();
+        
 
         currentHealth = maxHealth;
 
@@ -78,6 +79,7 @@ public class PlayerCombat : MonoBehaviour
     void Update()
     {
         if (debug) ShowDebug();
+        Debug.Log(canAttack);
 
         if (ammo > 2) ammo = 2;
 
@@ -116,19 +118,12 @@ public class PlayerCombat : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
-    {
-        Debug.Log("Resetou");
-        if (attackTrigger) attackTrigger = false;
-        if (shotTrigger) shotTrigger = false;
-    }
-
     public void CombatUpdate()
     {
         // Pra testar a vida do bixo se ele ta morrendo e afins.
 
-        if (Input.GetKeyDown(KeyCode.K)) TakeDamage(currentHealth, false);
-        if (Input.GetKeyDown(KeyCode.L)) TakeDamage(10, true);
+        //if (Input.GetKeyDown(KeyCode.K)) TakeDamage(currentHealth, false);
+        //if (Input.GetKeyDown(KeyCode.L)) TakeDamage(10, true);
 
         // Checa inputs pra setar o firePoint
 
@@ -159,6 +154,7 @@ public class PlayerCombat : MonoBehaviour
         {
             if(canAttack)
             {
+                attackTrigger = true;
                 StartCoroutine(Attack());
             }
         }
@@ -168,6 +164,7 @@ public class PlayerCombat : MonoBehaviour
             if(canShoot && ammo > 0)
             {
                 StartCoroutine(ShootDash());
+ 
             }
         }
     }
@@ -175,12 +172,9 @@ public class PlayerCombat : MonoBehaviour
     // transformei o ataque em uma corrotina, pra gerenciar melhor o tempo de ataque e cooldown, pra facilitar a vida nas animações.
     IEnumerator Attack()
     {
-        if (attackAnimIndex >= 3) attackAnimIndex = 0;
-
-
         isAttacking = true;
         canAttack = false;
-        attackTrigger = true;
+        
 
         Vector2 translatedAttackPoint = new Vector2(transform.position.x, transform.position.y) + attackPoint * facingDirection;
         DrawCircle(translatedAttackPoint, attackRange, Color.red);
@@ -191,8 +185,8 @@ public class PlayerCombat : MonoBehaviour
         {
             enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage, true);
         }
-        //Debug.Log("Atacou " + hitEnemies.Length + " inimigos");
-        attackAnimIndex++;
+        Debug.Log("Atacou " + hitEnemies.Length + " inimigos");
+        
 
         yield return new WaitForSeconds(attackDuration);
 
@@ -201,7 +195,6 @@ public class PlayerCombat : MonoBehaviour
         yield return new WaitForSeconds(attackCD);
 
         canAttack = true;
-
     }
 
     // mais ou menos o que fiz com o ataque só que no dash.

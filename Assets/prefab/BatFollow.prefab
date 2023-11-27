@@ -66,11 +66,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9670c33b1c0cd034a9c7f7d695f2803a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
+  playerController: {fileID: 0}
   Distance: 0
   atkDist: 0
   speed: 4
-  followEnemyDamage: 1
+  followEnemyDamage: 10
+  PlayerAttacked: 0
+  timerToAttack: 3
+  time: 1
+  player: {fileID: 0}
+  flip: 0
+  speedFlip: 0
 --- !u!212 &3276891635664941203
 SpriteRenderer:
   m_ObjectHideFlags: 0

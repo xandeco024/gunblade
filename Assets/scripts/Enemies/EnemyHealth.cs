@@ -15,24 +15,33 @@ public class EnemyHealth : MonoBehaviour
     [SerializeField] private float knockBackDuration;
     [SerializeField] private int coinAmount;
     private float currentHealth;
-    private bool isDead = false;
+    public bool isDead = false;
     private int facingDirection;
     private Color originalColor;
 
     [SerializeField] GameObject coinPrefab;
     [SerializeField] GameObject explosionParticle;
 
+    public HealthBarBoss healthBar;
+
     private void Awake()
     {
         enemyCol = GetComponent<BoxCollider2D>();
         enemyRB = GetComponent<Rigidbody2D>();
-        enemySR = GetComponent<SpriteRenderer>();   
+        enemySR = GetComponent<SpriteRenderer>();
+
+        
     }
 
     void Start()
     {
         originalColor = enemySR.color;
         currentHealth = maxHealth;
+
+        healthBar.SetHealth(currentHealth, maxHealth);
+
+
+
     }
 
     void Update()
@@ -67,6 +76,8 @@ public class EnemyHealth : MonoBehaviour
         currentHealth -= damage;
         StartCoroutine(Flash());
         if (knockBack) StartCoroutine(KnockBack());
+
+        healthBar.SetHealth(currentHealth, maxHealth);
     }
 
     IEnumerator Flash()

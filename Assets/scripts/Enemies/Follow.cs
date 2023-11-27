@@ -7,11 +7,7 @@ public class Follow : MonoBehaviour {
 
         [SerializeField] private PlayerController playerController;
         
-        /*  isso foi parte da tentativa
-         * [SerializeField] private PlayerMovement playerMovement;
-         
-            private int facingDirection = -1;
-         */
+        
         
         private GameObject wayPoint;
         private Vector3 wayPointPos;
@@ -19,7 +15,16 @@ public class Follow : MonoBehaviour {
 		[SerializeField] private float atkDist = 3;
         
         [SerializeField] private float speed = 5.0f;
-        [SerializeField] private int  followEnemyDamage = 2;
+        [SerializeField] private int  followEnemyDamage = 10;
+
+        [SerializeField] private bool PlayerAttacked = false;
+        [SerializeField] private float timerToAttack = 3f; //Random Timer.
+        [SerializeField] private float time = 1f;
+        public bool canAttack = false;
+
+        [SerializeField] private GameObject player;
+        public bool flip;
+        public float speedFlip;
         
         
 
@@ -27,32 +32,41 @@ public class Follow : MonoBehaviour {
         void Start()
         {
             playerController = GameObject.FindObjectOfType<PlayerController>();
-
-            /*playerMovement = GameObject.FindObjectOfType<PlayerMovement>();*/
-            
+          
             //At the start of the game, the zombies will find the gameobject called wayPoint.
             wayPoint = GameObject.Find("wayPoint");
         }
     
         void Update()
         {
+            Vector3 scale = transform.localScale;
+
+            if(player.transform.position.x > transform.position.x)
+            {
+                scale.x = Mathf.Abs(scale.x) * -1 * (flip ? -1 : 1);
+                transform.Translate(x: speedFlip * Time.deltaTime, y:0, z:0);
+            }
+            else 
+            {
+                scale.x = Mathf.Abs(scale.x) * (flip ? -1 : 1);
+                transform.Translate(x: speed * Time.deltaTime * -1, y:0, z:0);
+            }
+
+            transform.localScale = scale;
+
             float plyDist = Vector2.Distance(transform.position, playerController.transform.position);
             
-            //Animation();
-
+           
             if(plyDist < Distance && plyDist > atkDist)
             {
 
                 transform.position = Vector3.MoveTowards(transform.position, playerController.transform.position, speed * Time.deltaTime);
-                //Animation();
+                
             }
 
-            if(plyDist < atkDist)
-            {
-                //Adaptado do Codigo de DeadZone mais uma vez
-                playerController.GetComponent<PlayerCombat>().TakeDamage(followEnemyDamage, false);
-            }
+            TimerToAttack();
         }
+    
 
 		void OnDrawGizmosSelected()
         {
@@ -63,27 +77,33 @@ public class Follow : MonoBehaviour {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(transform.position, atkDist);
         }
-    /* Tentei Fazer um flip para o Morcego
-        void Flip()
+   
+         private void TimerToAttack()
         {
-            facingDirection = -facingDirection;
-            Vector3 enemyScale = transform.localScale;
-            enemyScale.x *= 1;
-            transform.localScale = enemyScale;
-        }
-        void CheckPlayerMov() 
-        {
-            if (playerMovement.horizontalInput > 0 && facingDirection == 1)
+            if(PlayerAttacked)
             {
-                Flip();
-            }
-
-            else if (playerMovement.horizontalInput < 0 && facingDirection == -1) 
-            {
-                Flip(); 
+                if (timerToAttack > 0)
+                {
+                    canAttack = false;
+                    timerToAttack -= time * Time.deltaTime;
+                }
+                    
+                else
+                {
+                    canAttack = true;
+                    timerToAttack = 3f;
+                }
             }
         }
-    */
+        void OnTriggerEnter2D (Collider2D coll)
+        
+        {
+                if(coll.gameObject.CompareTag("Player"))
+                {
+                    playerController.GetComponent<PlayerCombat>().TakeDamage(followEnemyDamage,false);
+                    PlayerAttacked = true;
+                }
+        }
 
     //Chamar as Animacoes do Inimigo
 }

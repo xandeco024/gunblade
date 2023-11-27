@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Patrol : MonoBehaviour
+public class Patrol: MonoBehaviour
 {
     [Header("Patrol Points")]
     [SerializeField] private Transform leftEdge;
@@ -14,6 +14,7 @@ public class Patrol : MonoBehaviour
     //Dano do inimigo
     [Header("Enemy Damage")]
     [SerializeField] private int patrolEnemyDamage;
+    
 
     [Header("Movement parameters")]
     [SerializeField] private float speed;
@@ -24,9 +25,16 @@ public class Patrol : MonoBehaviour
     [SerializeField] private float idleDuration;
     private float idleTimer;
 
+    [SerializeField] private bool PlayerAttacked = false;
+    [SerializeField] private float timerToAttack = 5f;
+    [SerializeField] private float time = 1f;
+    public bool canAttack = false;
+
     void Start()
     {
+
     }
+    
 
     private void Awake()
     {
@@ -52,6 +60,7 @@ public class Patrol : MonoBehaviour
             else
                 DirectionChange();
         }
+        PatrolTimerToAttack();
     }
 
     private void DirectionChange()
@@ -75,13 +84,32 @@ public class Patrol : MonoBehaviour
             enemy.position.y, enemy.position.z);
     }
     //Adaptei do codigo de DeadZone
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collider)
     {
 
-        if (collision.gameObject.CompareTag("Player"))
+        if (collider.gameObject.CompareTag("Player"))
         {   
-            collision.gameObject.GetComponent<PlayerCombat>().TakeDamage(patrolEnemyDamage, false);
-        }
+            collider.gameObject.GetComponent<PlayerCombat>().TakeDamage(patrolEnemyDamage, false);
+            PlayerAttacked = true;
+        }  
+    }
+  
 
+    private void PatrolTimerToAttack()
+    {
+        if (PlayerAttacked)
+        {
+            if (timerToAttack > 0)
+            {
+                canAttack = false;
+                timerToAttack -= time * Time.deltaTime;
+            }
+
+            else
+            {
+                canAttack = true;
+                timerToAttack = 5f;
+            }
+        }
     }
 }

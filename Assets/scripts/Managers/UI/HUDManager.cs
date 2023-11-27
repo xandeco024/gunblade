@@ -112,4 +112,5 @@ public class HUDManager : MonoBehaviour
 
         slider.value = 1f;
     }
+    
 }

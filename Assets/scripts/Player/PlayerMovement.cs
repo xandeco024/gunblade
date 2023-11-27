@@ -34,10 +34,12 @@ public class PlayerMovement : MonoBehaviour
     [HideInInspector] public bool IsJumping { get { return isJumping; }}
     [HideInInspector] public bool JumpTrigger { get { return jumpTrigger; }}
     [HideInInspector] public bool FallTrigger { get { return fallTrigger; }}
+    [HideInInspector] public float XSpeed { get { return playerRB.velocity.x; }}
     [HideInInspector] public float YSpeed { get { return playerRB.velocity.y; }}
     [HideInInspector] public bool IsWallJumping { get { return isWallJumping; }}
 
     [HideInInspector] public bool IsWallSliding { get { return isWallSliding; }}
+    [HideInInspector] public bool IsGrounded { get { return GroundCheck(); }}
 
     private void Start()
     {
@@ -51,7 +53,9 @@ public class PlayerMovement : MonoBehaviour
     {
         WallSlide();
 
-        if(Input.GetKeyDown(KeyCode.Space)) jumpTrigger = true;
+        if(Input.GetKeyDown(KeyCode.Space))
+        
+        jumpTrigger = true;
     }
 
     public void MovementFixedUpdate()
