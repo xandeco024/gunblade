@@ -64,11 +64,6 @@ public class PlayerMovement : MonoBehaviour
         Move();
     }
 
-    private void LateUpdate()
-    {
-        if (fallTrigger) fallTrigger = false;
-    }
-
     void Move()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
@@ -112,7 +107,6 @@ public class PlayerMovement : MonoBehaviour
         if (isJumping && GroundCheck())
         {
             isJumping = false;
-            Debug.Log("fall");
             fallTrigger = true;
         }
 

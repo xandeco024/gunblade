@@ -79,36 +79,12 @@ public class PlayerCombat : MonoBehaviour
     void Update()
     {
         if (debug) ShowDebug();
-        Debug.Log(canAttack);
 
         if (ammo > 2) ammo = 2;
 
         if(transform.localScale.x > 0) facingDirection = 1;
         else if (transform.localScale.x < 0) facingDirection= -1;
 
-        /*else if (CheckKeys(KeyCode.A, KeyCode.W, .2f))
-        {
-            rotation = 135;
-            fireDirection = new Vector2(-0.707f, 0.707f); // isso aq n funciona direito n�o, tem q pensar num jeito melhor
-        }
-
-        else if (CheckKeys(KeyCode.D, KeyCode.W, .2f))
-        {
-            rotation = 45;
-            fireDirection = new Vector2(0.707f, 0.707f);
-        }
-
-        else if (CheckKeys(KeyCode.A, KeyCode.S, .2f))
-        {
-            rotation = 225;
-            fireDirection = new Vector2(-0.707f, -0.707f);
-        }
-
-        else if (CheckKeys(KeyCode.D, KeyCode.S, .2f))
-        {
-            rotation = 315;
-            fireDirection = new Vector2(0.707f, -0.707f);
-        }*/
 
         firePoint = new Vector2(transform.position.x, transform.position.y) + fireDirection * 4;
 

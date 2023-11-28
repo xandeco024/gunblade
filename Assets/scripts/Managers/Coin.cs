@@ -8,7 +8,7 @@ public class Coin : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("BATUE");
+        //Debug.Log("BATUE");
 
         if (collision.gameObject.tag == "Player")
         {
