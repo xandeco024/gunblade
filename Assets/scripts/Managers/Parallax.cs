@@ -9,6 +9,8 @@ public class Parallax : MonoBehaviour
     private float sizeX, sizeY, startPosX, startPosY;
     public float parallaxXSpeed, parallaxYSpeed;
 
+    private float previousX;
+
     void Start()
     {
         startPosX = transform.position.x;
@@ -25,13 +27,15 @@ public class Parallax : MonoBehaviour
 
         transform.position = new Vector2(startPosX + distX, transform.position.y);
 
-        if (tempX > startPosX + sizeX / 2)
+        if (tempX > startPosX + sizeX)
         {
-            startPosX += sizeX;
+            startPosX += sizeX / 2;
+            Debug.Log("Pulo");
         }
-        else if (tempX < startPosX - sizeX / 2)
+        else if (tempX < startPosX - sizeX)
         {
-            startPosX -= sizeX;
+            startPosX -= sizeX / 2;
+            Debug.Log("Pulo Macaco");
         }
 
         // y
@@ -47,7 +51,18 @@ public class Parallax : MonoBehaviour
         }
         else if (tempY < startPosY - sizeY / 2)
         {
-            startPosY -= sizeY;
+            startPosY -= sizeY; 
+            
         }
+
+        float currentX = transform.position.x;              
+        float difference = Mathf.Abs(currentX - previousX);
+
+        if (difference > 1)
+        {
+            //Debug.Log("salto grande distancia" + difference + " de" + currentX + " a " + previousX  );
+        }
+
+        previousX = currentX;
     }
 }
