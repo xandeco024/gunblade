@@ -30,12 +30,12 @@ public class Parallax : MonoBehaviour
         if (tempX > startPosX + sizeX)
         {
             startPosX += sizeX / 2;
-            Debug.Log("Pulo");
+            //Debug.Log("Pulo");
         }
         else if (tempX < startPosX - sizeX)
         {
             startPosX -= sizeX / 2;
-            Debug.Log("Pulo Macaco");
+            //Debug.Log("Pulo Macaco");
         }
 
         // y

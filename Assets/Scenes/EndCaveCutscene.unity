@@ -123,6 +123,38 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &31650117
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 31650118}
+  m_Layer: 0
+  m_Name: of10
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &31650118
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 31650117}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1177085992}
+  m_Father: {fileID: 1714646542}
+  m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &164557331
 GameObject:
   m_ObjectHideFlags: 0
@@ -386,8 +418,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Mas isso \xE9 interrompido quando um sujeito intitulado, Bill Alisson,
-    diz querer vingan\xE7a contra Clay"
+  m_text: 'But this is interrupted when a titled guy, Bill Alisson, says he wants
+    revenge on Clay.
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -414,7 +448,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 50.25
+  m_fontSize: 56.8
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -986,8 +1020,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "e antes que pudesse reagir Clay estava morto, com um mapa em sua m\xE3o
-    que era um presente para James."
+  m_text: 'and before he could react Clay was dead, with a map in his hand that was
+    a gift for James.
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -1014,7 +1050,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 51.65
+  m_fontSize: 56.8
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1272,9 +1308,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "incr\xE9dulo Jeremy furou a multid\xE3o e pegou de seu pai um mapa que
-    seu pai deixara, quando se deu por si estava furioso ao ver Bill, tentou lhe
-    atacar com tudo que tinha"
+  m_text: 'in disbelief Jeremy broke through the crowd and took from his father a
+    map that his father had left, when he realized he was furious to see Bill, he
+    tried to attack him with everything he had
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -1431,7 +1469,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: tudo estava perdido naquele momento
+  m_text: "\reverything was lost at that moment"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -1778,8 +1816,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "que brilha em meio a escurid\xE3o, ao fundo enquanto est\xE1 no ch\xE3o,
-    escuta um di\xE1logo de 3 seres:\r\n"
+  m_text: "that shines in the darkness, in the background while it is on the ground,
+    it hears 3 beings debating about something...\r"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -1806,7 +1844,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 54.85
+  m_fontSize: 46.15
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1936,9 +1974,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "mas falhou...\nBill o atacou de forma t\xE3o r\xE1pida que agora est\xE1
-    atr\xE1s de Jeremy, que ap\xF3s sofrer com um corte frontal e cair no ch\xE3o
-    para tr\xE1s.\n"
+  m_text: 'but it failed...
+
+    Bill attacked him so quickly that he is now behind
+    Jeremy, who after suffering a frontal cut and falling backwards to the ground.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -2014,6 +2053,101 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 972770774}
+  m_CullTransparentMesh: 1
+--- !u!1 &1177085991
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1177085992}
+  - component: {fileID: 1177085995}
+  - component: {fileID: 1177085994}
+  - component: {fileID: 1177085993}
+  m_Layer: 5
+  m_Name: 10
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1177085992
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177085991}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 99.96749}
+  m_LocalScale: {x: 0.07317, y: 0.07317, z: 0}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 31650118}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -0.5534, y: 2.9886}
+  m_SizeDelta: {x: 184.142, y: 105.7785}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!95 &1177085993
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177085991}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1177085994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177085991}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 2800000, guid: 86fa742d6559cb6418a346b17e27e950, type: 3}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!222 &1177085995
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1177085991}
   m_CullTransparentMesh: 1
 --- !u!1 &1233864198
 GameObject:
@@ -2288,9 +2422,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Ao chegar na vila percebe que seu pai, Clay, est\xE1 reunido com seu filho
-    prod\xEDgio James para ele finalmente deixar a vila ap\xF3s 18 anos, rumo a explorar
-    um vasto mundo."
+  m_text: 'Upon arriving at the village, he realizes that his father, Clay, is meeting
+    with his prodigy son James so he can finally leave the village after 18 years,
+    heading to explore a vast world.
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -2625,7 +2761,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ff60420c2ff8114a80852c437fe1326, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timer: 101.65
+  timer: 126.46
   sceneName: BossPhase
   trigger: 0
 --- !u!4 &1560832781
@@ -2723,8 +2859,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "ele ent\xE3o ataca, mas Clay \xE9 protegido por seu filho, James, \nque
-    em quest\xE3o de segundos \xE9 derrotado"
+  m_text: "\rHe then attacks, but Clay is protected by his son, James,\r\nwhich in
+    a matter of seconds is defeated"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -2751,7 +2887,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 48.45
+  m_fontSize: 49.95
   m_fontSizeBase: 40
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -2935,6 +3071,7 @@ Transform:
   - {fileID: 1968365366}
   - {fileID: 1718039272}
   - {fileID: 1359075406}
+  - {fileID: 31650118}
   m_Father: {fileID: 543977766}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2995,6 +3132,8 @@ PlayableDirector:
     value: {fileID: 1441110094}
   - key: {fileID: -4606854514116527551, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
     value: {fileID: 850049305}
+  - key: {fileID: 8301535185566114493, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
+    value: {fileID: 1177085991}
   m_ExposedReferences:
     m_References:
     - 37a46a50e2badf843be34de18058c97e: {fileID: 433659609}
@@ -3144,7 +3283,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: tudo fica escuro em torno de jeremy
+  m_text: 'everything goes dark around jeremy
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}

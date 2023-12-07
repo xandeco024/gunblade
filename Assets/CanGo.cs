@@ -16,7 +16,6 @@ public class CanGo : MonoBehaviour
         canGoCollider.isTrigger = true;   
     }
 
-    // Update is called once per frame
     void Update()
     {
         
@@ -30,8 +29,6 @@ public class CanGo : MonoBehaviour
         {
             canGoCollider.isTrigger = false;
             Destroy(background);
-
-           
         }
     }
 

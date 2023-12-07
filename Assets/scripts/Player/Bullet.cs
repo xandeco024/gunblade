@@ -42,7 +42,7 @@ public class Bullet : MonoBehaviour
                 Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(transform.position, explosionRange, enemyLayer);
                 foreach (Collider2D enemy in hitEnemies)
                 {
-                    enemy.GetComponent<EnemyHealth>().TakeDamage(explosionDamage, true);
+                    enemy.GetComponent<Enemy>().TakeDamage(explosionDamage, true);
                 }
                 //Debug.Log("Pegou " + hitEnemies.Length + " inimigos");
 

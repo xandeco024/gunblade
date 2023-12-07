@@ -15,12 +15,14 @@ public class Follow : MonoBehaviour {
 		[SerializeField] private float atkDist = 3;
         
         [SerializeField] private float speed = 5.0f;
+
         [SerializeField] private int  followEnemyDamage = 10;
 
         [SerializeField] private bool PlayerAttacked = false;
         [SerializeField] private float timerToAttack = 3f; //Random Timer.
         [SerializeField] private float time = 1f;
-        public bool canAttack = false;
+        private bool canAttack = false;
+
 
         [SerializeField] private GameObject player;
         public bool flip;
@@ -31,8 +33,8 @@ public class Follow : MonoBehaviour {
 
         void Start()
         {
-            playerController = GameObject.FindObjectOfType<PlayerController>();
-          
+            player = GameObject.FindGameObjectWithTag("Player");
+
             //At the start of the game, the zombies will find the gameobject called wayPoint.
             wayPoint = GameObject.Find("wayPoint");
         }
@@ -64,7 +66,6 @@ public class Follow : MonoBehaviour {
                 
             }
 
-            TimerToAttack();
         }
     
 
@@ -77,7 +78,18 @@ public class Follow : MonoBehaviour {
             Gizmos.color = Color.red;
             Gizmos.DrawSphere(transform.position, atkDist);
         }
-   
+        
+        
+        void OnTriggerEnter2D (Collider2D coll)
+        
+        {
+                if(coll.gameObject.CompareTag("Player"))
+                {
+                    playerController.GetComponent<PlayerCombat>().TakeDamage(followEnemyDamage,false);
+                    PlayerAttacked = true;
+                }
+        }
+
          private void TimerToAttack()
         {
             if(PlayerAttacked)
@@ -95,15 +107,7 @@ public class Follow : MonoBehaviour {
                 }
             }
         }
-        void OnTriggerEnter2D (Collider2D coll)
-        
-        {
-                if(coll.gameObject.CompareTag("Player"))
-                {
-                    playerController.GetComponent<PlayerCombat>().TakeDamage(followEnemyDamage,false);
-                    PlayerAttacked = true;
-                }
-        }
+
 
     //Chamar as Animacoes do Inimigo
 }

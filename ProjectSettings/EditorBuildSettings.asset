@@ -18,12 +18,12 @@ EditorBuildSettings:
     path: Assets/Scenes/CaveInside.unity
     guid: 2aa990a8d2dbdf049ada2983c6c7b4b7
   - enabled: 1
-    path: Assets/Scenes/BossPhase.unity
-    guid: 52ea476f27778374fa993f6768bc0a5e
-  - enabled: 1
     path: Assets/Scenes/EndCaveCutscene.unity
     guid: 040c7cb2956cca444b9e0bd8a01e61b9
   - enabled: 1
-    path: Assets/Scenes/TotemCutscene.unity
-    guid: 37a69ba2292e870468fc5df54ce8cee6
+    path: Assets/Scenes/BossPhase.unity
+    guid: 52ea476f27778374fa993f6768bc0a5e
+  - enabled: 1
+    path: Assets/Scenes/Acabou.unity
+    guid: abfdf294157c0ff46a3076d8f024b473
   m_configObjects: {}

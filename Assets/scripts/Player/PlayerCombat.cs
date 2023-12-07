@@ -126,7 +126,7 @@ public class PlayerCombat : MonoBehaviour
 
         // Checa inputs e condicoes pra performar ataque e disparo
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             if(canAttack)
             {
@@ -135,7 +135,7 @@ public class PlayerCombat : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.G))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             if(canShoot && ammo > 0)
             {
@@ -159,9 +159,12 @@ public class PlayerCombat : MonoBehaviour
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(translatedAttackPoint, attackRange, enemyLayer);
         foreach (Collider2D enemy in hitEnemies)
         {
-            enemy.GetComponent<EnemyHealth>().TakeDamage(attackDamage, true);
+            if (enemy.GetComponent<Enemy>() != null)
+            {
+                enemy.GetComponent<Enemy>().TakeDamage(attackDamage, true);
+            }
         }
-        Debug.Log("Atacou " + hitEnemies.Length + " inimigos");
+        //Debug.Log("Atacou " + hitEnemies.Length + " inimigos");
         
 
         yield return new WaitForSeconds(attackDuration);

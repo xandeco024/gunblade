@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -57,5 +58,16 @@ public class GameManagerScript : MonoBehaviour
     private void OnDestroy()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    public void LastScene(float time)
+    {
+        StartCoroutine(LastSceneCoroutine(time));
+    }
+
+    IEnumerator LastSceneCoroutine(float time)
+    {
+        yield return new WaitForSeconds(time);
+        SceneManager.LoadScene("Acabou");
     }
 }

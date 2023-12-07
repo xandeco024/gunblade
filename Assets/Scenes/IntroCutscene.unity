@@ -386,8 +386,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Que roubava terras, tirava a liberdade e dinheiro do povo, at\xE9 que
-    um dia..."
+  m_text: 'Who stole land, took freedom and money from the people, until one day...
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -890,8 +891,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u201CA lenda das 6 balas\u201D,\nquem eram, poucas pessoas sabiam \ne
-    onde estavam tamb\xE9m era uma inc\xF3gnita"
+  m_text: "\u201CThe legend of the 6 bullets\u201D,\r\nwho they were, few people
+    knew\r\nand where they were was also unknown"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -900,8 +901,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 16777215
+  m_fontColor: {r: 1, g: 1, b: 1, a: 0}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -1081,7 +1082,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: " at\xE9 hoje\u2026"
+  m_text: "until today\u2026\r"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -1359,6 +1360,7 @@ GameObject:
   - component: {fileID: 1203410597}
   - component: {fileID: 1203410599}
   - component: {fileID: 1203410598}
+  - component: {fileID: 1203410600}
   m_Layer: 5
   m_Name: 6
   m_TagString: Untagged
@@ -1421,6 +1423,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1203410596}
   m_CullTransparentMesh: 1
+--- !u!95 &1203410600
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1203410596}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1301756089
 GameObject:
   m_ObjectHideFlags: 0
@@ -1501,7 +1524,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Certo tempo, havia um tirano, \nconhecido como Frank Alisson"
+  m_text: 'Once upon a time, there was a tyrant,
+
+    known as Frank Allison'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -1708,7 +1733,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ff60420c2ff8114a80852c437fe1326, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timer: 45
+  timer: 81.56
   sceneName: 1 Fase
   trigger: 0
 --- !u!4 &1560832781
@@ -1806,9 +1831,11 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "7 lend\xE1rios guerreiros foram contra sua tirania, e a queda do mal foi
-    um respiro para a liberdade de centenas e a exist\xEAncia dessas pessoas foi
-    tratada apenas como uma hist\xF3ria"
+  m_text: '7 legendary warriors stood against his tyranny, and the fall of evil was
+    a breath of freedom for hundreds and the existence of these people was treated
+    just as a story
+
+'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
   m_sharedMaterial: {fileID: -5888105712615004125, guid: 671cfab68388a9b46a6a2adb15509137, type: 2}
@@ -2027,41 +2054,36 @@ PlayableDirector:
   m_GameObject: {fileID: 1714646541}
   m_Enabled: 1
   serializedVersion: 3
-  m_PlayableAsset: {fileID: 11400000, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
+  m_PlayableAsset: {fileID: 11400000, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
   m_InitialState: 1
   m_WrapMode: 2
   m_DirectorUpdateMode: 1
   m_InitialTime: 0
   m_SceneBindings:
-  - key: {fileID: 0}
-    value: {fileID: 0}
-  - key: {fileID: 1118131368810156310, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
+  - key: {fileID: 2731580697407048440, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
     value: {fileID: 1599757333}
-  - key: {fileID: -775823198255102024, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
-    value: {fileID: 830208773}
-  - key: {fileID: 6165116904165493756, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
-    value: {fileID: 833610990}
-  - key: {fileID: -7507775932787178786, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
-    value: {fileID: 577479392}
-  - key: {fileID: 7630181893702643691, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
-    value: {fileID: 441604175}
-  - key: {fileID: 2077146747050540409, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
-    value: {fileID: 1203410596}
-  - key: {fileID: 3981606087884052587, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
+  - key: {fileID: 1524947872750432268, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
     value: {fileID: 1301756091}
-  - key: {fileID: -1346433862482701659, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
+  - key: {fileID: -6108755886530371179, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
+    value: {fileID: 830208773}
+  - key: {fileID: -4670349790620724260, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
     value: {fileID: 487415282}
-  - key: {fileID: -3307936201896044681, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
+  - key: {fileID: 3992851388528073046, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
+    value: {fileID: 833610990}
+  - key: {fileID: 4945537572819912716, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
     value: {fileID: 1588318824}
-  - key: {fileID: 364077507512702357, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
+  - key: {fileID: 4056253535877805297, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
+    value: {fileID: 577479392}
+  - key: {fileID: 316719416033649297, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
     value: {fileID: 579542781}
-  - key: {fileID: 1250161778950780647, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
+  - key: {fileID: -3379156250974298965, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
+    value: {fileID: 441604175}
+  - key: {fileID: -6639657102922444028, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
     value: {fileID: 808193222}
-  - key: {fileID: -4019253495891848697, guid: 5b7f2904e0a92114e80b08725f9e0195, type: 2}
-    value: {fileID: 0}
+  - key: {fileID: 2917741248117727163, guid: b708f98cfe2c2174daf28354ea4ce9d2, type: 2}
+    value: {fileID: 1203410596}
   m_ExposedReferences:
-    m_References:
-    - 37a46a50e2badf843be34de18058c97e: {fileID: 433659609}
+    m_References: []
 --- !u!1 &2134753648
 GameObject:
   m_ObjectHideFlags: 0
